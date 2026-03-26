@@ -1,3 +1,14 @@
+## Documentation index
+
+| Document | Role |
+| -------- | ---- |
+| [README.md](README.md) | Quick start, monorepo layout, CI |
+| [AGENTS.md](AGENTS.md) | Agent tracks, `@bughunter/shared` contract rules |
+| Package READMEs (`packages/*/README.md`) | Per-package scope and build notes |
+| **This file (`spec.md`)** | Full product specification (below) |
+
+---
+
 Perfect—that means you’re building this as a **flagship project**, not just something to “finish.” I’ll give you a **NON-MVP, FULL FEATURE SPEC** that’s modular, scalable, and ideal for **multi-agent Cursor development**.
 
 This is basically a **product-level blueprint**.

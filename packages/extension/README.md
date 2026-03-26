@@ -1,14 +1,19 @@
-# Bug Hunter — VS Code Extension
+# `@bughunter/extension`
 
-A gamified code analysis extension that turns detected issues into bugs you fight in a turn-based RPG combat system.
+**VS Code extension host** for Bug Hunter: activation, commands, dependency injection, event bus, file hooks, state management, bug mapping, and the **sidebar webview** bridge.
 
-## Features
+## Responsibilities
 
-- **Real-time analysis** — Scans files on open and edit with debounced hooks.
-- **Bug arena** — Issues become creatures with HP, attack, defense, and rarity tiers (common, rare, epic, boss).
-- **Turn-based combat** — Attack bugs to defeat them; earn XP and level up.
-- **Combat log** — Live activity feed of hits, misses, crits, and victories.
-- **Sidebar webview** — Full React + Tailwind UI inside the VS Code sidebar.
+| Area          | Location (overview)                                    |
+| ------------- | ------------------------------------------------------ |
+| Lifecycle     | `src/extension.ts`                                     |
+| Commands      | `src/commands/registerCommands.ts`                     |
+| DI            | `src/di/container.ts`                                  |
+| Events        | `src/bus/eventBus.ts`                                  |
+| File analysis | `src/files/fileHooks.ts` + `@bughunter/analyzers`      |
+| Game state    | `src/state/stateManager.ts` + `@bughunter/game-engine` |
+| Bugs          | `src/game/bugMapper.ts`, `mergeSpawnedBugs.ts`         |
+| Webview       | `src/webview/BugHunterViewProvider.ts`                 |
 
 ## Commands
 
@@ -18,22 +23,32 @@ A gamified code analysis extension that turns detected issues into bugs you figh
 
 ## Configuration
 
-| Setting                        | Type    | Default | Description                                |
-| ------------------------------ | ------- | ------- | ------------------------------------------ |
-| `bugHunter.fileHooksEnabled`   | boolean | `true`  | Enable/disable file analysis hooks         |
-| `bugHunter.fileHookDebounceMs` | number  | `500`   | Debounce delay for file change events (ms) |
+| Setting                        | Type    | Default | Description                          |
+| ------------------------------ | ------- | ------- | ------------------------------------ |
+| `bugHunter.fileHooksEnabled`   | boolean | `true`  | Enable/disable file analysis hooks   |
+| `bugHunter.fileHookDebounceMs` | number  | `500`   | Debounce for file change events (ms) |
 
-## Development
+## Build
 
-This package is part of the [Bug Hunter monorepo](../../README.md). Build from the repo root:
+From the **repository root** (recommended):
 
 ```bash
 npm install
 npm run build
 ```
 
-Then press **F5** to launch the Extension Development Host.
+This runs `esbuild` for the extension bundle and **copies** the webview production build into `media/webview/`.
+
+## Development
+
+Press **F5** or use **Run Extension** in VS Code ([`.vscode/launch.json`](../../.vscode/launch.json)).
 
 ## Requirements
 
 - VS Code >= 1.85.0
+
+## See also
+
+- [Webview](../webview/README.md) — UI bundled into this package.
+- [Shared](../shared/README.md) — message contracts.
+- [Root README](../../README.md) — monorepo overview.

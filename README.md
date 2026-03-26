@@ -1,61 +1,86 @@
 # Bug Hunter
 
-A gamified developer intelligence platform for VS Code that transforms code analysis into an interactive, turn-based combat experience.
+A gamified developer intelligence platform for VS Code that turns code analysis into an interactive, turn-based combat experience in the sidebar.
+
+## Documentation
+
+| Document                   | Description                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------ |
+| **[spec.md](spec.md)**     | Full product specification (vision, architecture, modules).                          |
+| **[AGENTS.md](AGENTS.md)** | Multi-agent tracks, package ownership, integration rules, shared contract changelog. |
+| **Package READMEs**        | Each workspace under `packages/*` has its own `README.md` (scope, build, links).     |
+
+### Package index
+
+| Package                  | Path                                         | Role                                   |
+| ------------------------ | -------------------------------------------- | -------------------------------------- |
+| `@bughunter/shared`      | [packages/shared](packages/shared)           | Types and extension ↔ webview messages |
+| `@bughunter/extension`   | [packages/extension](packages/extension)     | VS Code extension host                 |
+| `@bughunter/webview`     | [packages/webview](packages/webview)         | React + Tailwind sidebar UI            |
+| `@bughunter/analyzers`   | [packages/analyzers](packages/analyzers)     | Analysis orchestrator and rules        |
+| `@bughunter/game-engine` | [packages/game-engine](packages/game-engine) | Combat, XP, progression (pure TS)      |
+| `@bughunter/ai`          | [packages/ai](packages/ai)                   | AI provider interface + stub           |
+| `@bughunter/cpp-engine`  | [packages/cpp-engine](packages/cpp-engine)   | Optional N-API native analyzer         |
 
 ## Overview
 
-Bug Hunter analyzes your code in real time, spawns bugs based on detected issues, and lets you fight them in a turn-based RPG-style combat system — all inside a VS Code sidebar.
+Bug Hunter analyzes your code in real time, spawns **bugs** from detected issues, and lets you fight them in turn-based combat — all inside a VS Code sidebar webview.
 
-## Monorepo Structure
+## Monorepo layout
 
-| Package                | Description                                                   |
-| ---------------------- | ------------------------------------------------------------- |
-| `packages/shared`      | Shared types, message contracts, and event definitions        |
-| `packages/extension`   | VS Code extension core — activation, commands, webview bridge |
-| `packages/webview`     | React + Tailwind sidebar UI                                   |
-| `packages/analyzers`   | Code analysis rules and orchestrator                          |
-| `packages/game-engine` | Combat, XP, progression (pure TS, deterministic)              |
-| `packages/ai`          | AI provider interface and stub                                |
-| `packages/cpp-engine`  | Optional C++ N-API module for high-performance analysis       |
+npm **workspaces** (`packages/*`). The **build order** is fixed: `shared` → `game-engine` → `analyzers` → `ai` → `webview` → `extension` (extension copies the webview `dist` into `media/webview`).
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
 - Node.js >= 18
 - npm >= 10
 
-### Install & Build
+### Install and build
 
 ```bash
 npm install
 npm run build
 ```
 
-The build script compiles packages in dependency order: `shared` -> `game-engine` -> `analyzers` -> `ai` -> `webview` -> `extension`.
+### Run the extension
 
-### Run in Development
+1. Open this repository in VS Code.
+2. Press **F5** or use **Run Extension** ([.vscode/launch.json](.vscode/launch.json)).
+3. In the Extension Development Host, open the Bug Hunter view from the activity bar.
 
-1. Open this repo in VS Code.
-2. Press **F5** (or use the **Run Extension** launch configuration).
-3. The Bug Hunter sidebar appears in the activity bar of the Extension Development Host.
+CLI alternative:
 
-### Lint & Format
+```bash
+code --extensionDevelopmentPath=/absolute/path/to/packages/extension
+```
+
+### Quality checks
 
 ```bash
 npm run lint
 npm run format:check
 npm run format
+npm test
 ```
 
-## How It Works
+### Continuous integration
 
-1. **File hooks** detect when you open or edit a file.
-2. The **analyzer engine** scans the code for issues (complexity, security, code smells).
-3. Issues are transformed into **bugs** with HP, attack, defense, and rarity.
-4. You **attack bugs** in the sidebar arena — turn-based combat with crits, misses, and XP rewards.
-5. Defeat bugs to **level up** and track your progress.
+[.github/workflows/ci.yml](.github/workflows/ci.yml) runs on pushes and pull requests to `main`: install, build, lint, Prettier check, and tests (Node 18, 20, 22).
+
+## How it works
+
+1. **File hooks** detect when you open or edit a file (debounced).
+2. The **analyzer** scans JS/TS-like sources and emits **issues**.
+3. Issues become **bugs** with stats (HP, attack, defense, rarity).
+4. You **attack** bugs in the sidebar; the **game engine** resolves turns, XP, and level-ups.
+5. State and **combat log** updates flow to the webview via typed messages from `@bughunter/shared`.
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Repository
+
+Upstream: `https://github.com/NarixenoAdaxius/bug-hunter`

@@ -1,16 +1,16 @@
-# C++ engine (Module K)
+# `@bughunter/cpp-engine`
 
-Native **N-API** addon for high-performance analysis. Default build uses **node-gyp** + `binding.gyp` (CMake + **cmake-js** is optional if you have CMake installed).
+Optional **N-API** native addon for higher-performance or deeper analysis paths. **Not** part of the default `npm run build` at the repo root — opt in when you need a compiled module.
 
 ## Prerequisites
 
-- **Node.js** (same major as the VS Code extension host when you load this from the extension)
-- **Python 3** (node-gyp)
-- A C++ toolchain: **g++/clang**, **make**
+- **Node.js** (match the major version used by the extension host when you load this from the extension).
+- **Python 3** (for node-gyp).
+- A C++ toolchain: **g++** / **clang**, **make**.
 
 Optional, only for `npm run build:cmake`:
 
-- **CMake** 3.15+ ([cmake.org](https://cmake.org/download/))
+- **CMake** 3.15+ — [cmake.org](https://cmake.org/download/)
 
 ## Build (opt-in)
 
@@ -22,7 +22,7 @@ From the repository root:
 npm run build -w @bughunter/cpp-engine
 ```
 
-This runs `node-gyp rebuild` and writes the addon under `build/Release/cpp_engine.node` (the `build/` tree is gitignored).
+This runs `node-gyp rebuild` and writes the addon under `build/Release/` (the `build/` tree is gitignored).
 
 With CMake installed, you can alternatively run:
 
@@ -30,11 +30,11 @@ With CMake installed, you can alternatively run:
 npm run build:cmake -w @bughunter/cpp-engine
 ```
 
-That uses [CMakeLists.txt](./CMakeLists.txt) and cmake-js; output layout follows cmake-js defaults (still under `build/`).
+That uses [CMakeLists.txt](./CMakeLists.txt) and cmake-js; output follows cmake-js defaults (still under `build/`).
 
 ## API
 
-- `scanStats(code: string)` → `{ byteLength, lineCount }` — lightweight native stub used to validate the N-API bridge; deeper AST/complexity work will extend this module.
+- **`scanStats(code: string)`** → `{ byteLength, lineCount }` — lightweight native stub to validate the N-API bridge; future work can extend this with deeper analysis.
 
 ## Layout
 
@@ -44,3 +44,8 @@ That uses [CMakeLists.txt](./CMakeLists.txt) and cmake-js; output layout follows
 | `CMakeLists.txt`  | Optional cmake-js build                  |
 | `src/binding.cpp` | N-API exports (`node-addon-api`)         |
 | `index.mjs`       | ESM loader (`bindings` resolves `.node`) |
+
+## See also
+
+- [Analyzers](../analyzers/README.md) — primary JS/TS analysis pipeline today.
+- [Root README](../../README.md) — monorepo overview.

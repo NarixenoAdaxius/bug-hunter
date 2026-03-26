@@ -25,6 +25,10 @@ function rngFromValues(values: number[]): () => number {
   };
 }
 
+function rngHit(): () => number {
+  return rngFromValues([0.5, 0.5, 0.5]);
+}
+
 function makeBug(overrides: Partial<Bug> = {}): Bug {
   return {
     id: '1',
@@ -37,14 +41,14 @@ function makeBug(overrides: Partial<Bug> = {}): Bug {
     defense: 1,
     issue: { id: 'i', message: 'm', severity: 'warning' },
     abilities: [],
+    status: 'idle' as const,
     ...overrides,
   };
 }
 
 describe('computeHitDamage', () => {
   it('uses crit then roll: 0.5,0.5,0.5 -> no crit, roll 10', () => {
-    const rng = rngFromValues([0.5, 0.5, 0.5]);
-    const r = computeHitDamage(10, 2, rng);
+    const r = computeHitDamage(10, 2, rngHit());
     expect(r.critical).toBe(false);
     expect(r.damage).toBe(8 + 10);
   });
@@ -66,8 +70,7 @@ describe('resolvePlayerAttack', () => {
   });
 
   it('on hit delegates to computeHitDamage', () => {
-    const rng = rngFromValues([0.5, 0.5, 0.5]);
-    const r = resolvePlayerAttack(10, { defense: 2 }, rng, 0.1);
+    const r = resolvePlayerAttack(10, { defense: 2 }, rngHit(), 0.1);
     expect(r.miss).toBe(false);
     expect(r.damage).toBe(18);
   });
@@ -82,8 +85,7 @@ describe('resolveBugAttack', () => {
   });
 
   it('hits when roll >= missChance', () => {
-    const rng = rngFromValues([0.5, 0.5, 0.5]);
-    const r = resolveBugAttack({ attack: 8 }, { defense: 3 }, rng, 0.1);
+    const r = resolveBugAttack({ attack: 8 }, { defense: 3 }, rngHit(), 0.1);
     expect(r.miss).toBe(false);
     expect(r.damage).toBeGreaterThan(0);
   });
@@ -116,8 +118,7 @@ describe('simulateEncounter', () => {
   it('awards xp on victory', () => {
     const bug = makeBug({ hp: 5, maxHp: 5, attack: 1, defense: 0 });
     const player = { attack: 100, defense: 0, hp: 100, maxHp: 100 };
-    const rng = rngFromValues([0.5, 0.5, 0.5]);
-    const res = simulateEncounter({ level: 1, xp: 0, xpToNextLevel: 100 }, player, bug, rng, {
+    const res = simulateEncounter({ level: 1, xp: 0, xpToNextLevel: 100 }, player, bug, rngHit(), {
       missChance: 0,
     });
     expect(res.victory).toBe(true);
@@ -141,9 +142,8 @@ describe('simulateEncounter', () => {
 
 describe('calculateDamage', () => {
   it('matches computeHitDamage with bug defense', () => {
-    const rng = rngFromValues([0.5, 0.5, 0.5]);
-    const a = calculateDamage(10, { defense: 2 }, rng);
-    const b = computeHitDamage(10, 2, rngFromValues([0.5, 0.5, 0.5]));
+    const a = calculateDamage(10, { defense: 2 }, rngHit());
+    const b = computeHitDamage(10, 2, rngHit());
     expect(a).toEqual(b);
   });
 });

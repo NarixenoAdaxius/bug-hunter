@@ -58,37 +58,39 @@ export function createExtensionServices(context: vscode.ExtensionContext): Exten
   const issueIndex = new WorkspaceIssueIndex();
 
   const pushIssuesToState = (issues: Issue[]): void => {
+    const previousBugs = stateManager.get().bugs;
     const spawned = spawnBugs(issues);
-    const bugs = mergeSpawnedBugs(stateManager.get().bugs, spawned);
+    const bugs = mergeSpawnedBugs(previousBugs, spawned);
     stateManager.update({ issues, bugs });
     bus.emit('BUG_SPAWNED', { bugs });
-    checkFightingBugsResolved();
+    resolveFightingBugs(previousBugs, bugs);
   };
 
-  /** After any rescan, check if fighting bugs had their issues resolved. */
-  const checkFightingBugsResolved = (): void => {
-    const state = stateManager.get();
-    const fighting = state.bugs.filter((b) => b.status === 'fighting');
-    if (fighting.length === 0) return;
+  /**
+   * Compares the previous bug list to the current one after a rescan.
+   * Fighting bugs that are no longer present have been resolved by the user;
+   * mark them defeated and award XP.
+   */
+  const resolveFightingBugs = (previousBugs: Bug[], currentBugs: Bug[]): void => {
+    const previousFighting = previousBugs.filter((b) => b.status === 'fighting');
+    if (previousFighting.length === 0) return;
 
-    const currentIssueIds = new Set(state.issues.map((i) => i.id));
+    const currentBugIds = new Set(currentBugs.map((b) => b.id));
     const nowDefeated: Bug[] = [];
-    const stillActive: Bug[] = [];
 
-    for (const bug of state.bugs) {
-      if (bug.status === 'fighting' && !currentIssueIds.has(bug.issue.id)) {
+    for (const bug of previousFighting) {
+      if (!currentBugIds.has(bug.id)) {
         nowDefeated.push({
           ...bug,
           status: 'defeated',
           defeatedAt: Date.now(),
         });
-      } else {
-        stillActive.push(bug);
       }
     }
 
     if (nowDefeated.length === 0) return;
 
+    const state = stateManager.get();
     let game = { ...state.game };
     const newLogEntries: ActivityLogEntry[] = [];
     let totalDefeated = 0;
@@ -106,13 +108,7 @@ export function createExtensionServices(context: vscode.ExtensionContext): Exten
     const session = { ...state.session, bugsDefeated: state.session.bugsDefeated + totalDefeated };
     const activityLog = [...state.activityLog, ...newLogEntries];
 
-    stateManager.update({
-      bugs: stillActive,
-      defeatedBugs,
-      game,
-      session,
-      activityLog,
-    });
+    stateManager.update({ defeatedBugs, game, session, activityLog });
     viewProvider.postActivityLog(newLogEntries);
   };
 
@@ -181,11 +177,12 @@ export function createExtensionServices(context: vscode.ExtensionContext): Exten
       if (!doc || doc.isClosed) return;
       const code = doc.getText();
       const issues = analyze({ code, languageId: payload.languageId });
+      const previousBugs = stateManager.get().bugs;
       const spawned = spawnBugs(issues);
-      const bugs = mergeSpawnedBugs(stateManager.get().bugs, spawned);
+      const bugs = mergeSpawnedBugs(previousBugs, spawned);
       stateManager.update({ issues, bugs });
       bus.emit('BUG_SPAWNED', { bugs });
-      checkFightingBugsResolved();
+      resolveFightingBugs(previousBugs, bugs);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       vscode.window.showErrorMessage(`Bug Hunter: analysis failed — ${msg}`);

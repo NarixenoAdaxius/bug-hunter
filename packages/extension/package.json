@@ -2,7 +2,7 @@
   "name": "bug-hunter",
   "displayName": "Bug Hunter",
   "description": "Gamified code analysis — fight bugs in a turn-based RPG inside VS Code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "bughunter",
   "license": "MIT",
   "icon": "media/icon.png",

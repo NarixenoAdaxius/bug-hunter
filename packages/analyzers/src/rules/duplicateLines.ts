@@ -4,8 +4,10 @@ import { makeIssueId } from '../issueId.js';
 
 const PLUGIN = 'duplicateLines';
 
-const MIN_LEN = 12;
+const MIN_LEN = 30;
+const MIN_OCCURRENCES = 3;
 const TRIVIAL = /^\s*[{}[\]\s;,:]*$/;
+const SKIP_LINE = /^\s*(import\s|export\s|require\(|\/\/|\/\*|\*|return\s*[;)}\]]?\s*$)/;
 
 function run(input: AnalyzeInput): Issue[] {
   const lines = input.code.split(/\r?\n/);
@@ -13,7 +15,7 @@ function run(input: AnalyzeInput): Issue[] {
 
   for (let i = 0; i < lines.length; i++) {
     const t = lines[i].trim();
-    if (t.length < MIN_LEN || TRIVIAL.test(t)) {
+    if (t.length < MIN_LEN || TRIVIAL.test(t) || SKIP_LINE.test(lines[i])) {
       continue;
     }
     const list = byText.get(t);
@@ -26,14 +28,14 @@ function run(input: AnalyzeInput): Issue[] {
 
   const issues: Issue[] = [];
   for (const [text, lineNos] of byText) {
-    if (lineNos.length < 2) {
+    if (lineNos.length < MIN_OCCURRENCES) {
       continue;
     }
     const first = lineNos[0];
     const id = makeIssueId(PLUGIN, 'dup', first, shortSnippet(text));
     issues.push({
       id,
-      message: `Similar or duplicate line appears ${lineNos.length} times (lines ${lineNos.join(', ')}). Consider extracting a helper.`,
+      message: `Duplicate line appears ${lineNos.length} times (lines ${lineNos.join(', ')}). Consider extracting a helper.`,
       severity: 'info',
       line: first,
     });

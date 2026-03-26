@@ -44,10 +44,10 @@ describe('duplicateLines', () => {
   it('flags repeated non-trivial lines', () => {
     const p = createDuplicateLinesPlugin();
     const line = '    const x = duplicateWorkload + 1;';
-    const code = `${line}\n${line}\n`;
+    const code = `${line}\n${line}\n${line}\n`;
     const issues = p.run({ code });
     expect(issues.length).toBe(1);
-    expect(issues[0].message).toContain('duplicate');
+    expect(issues[0].message).toContain('Duplicate');
   });
 });
 

@@ -4,11 +4,11 @@ Shared **domain types** and **extension ↔ webview message contracts**. Every w
 
 ## Contents
 
-| Area         | Description                                                                                                             |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| **Domain**   | `Issue`, `Bug`, `BugRarity`, `GameState`, `AppState`, `PlayerCombatStats`, `CombatLogEntry`, `Settings`, `SessionStats` |
-| **Events**   | `BugHunterEvent`, `EventPayloadMap`, `BUG_HUNTER_EVENTS` — typed payloads for the extension event bus                   |
-| **Messages** | `WebviewToHostMessage`, `HostToWebviewMessage` — the only shapes allowed over the webview `postMessage` bridge          |
+| Area         | Description                                                                                                                                              |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Domain**   | `Issue`, `Bug`, `BugStatus`, `BugRarity`, `GameState`, `AppState`, `PlayerCombatStats`, `ActivityLogEntry`, `CombatLogEntry`, `Settings`, `SessionStats` |
+| **Events**   | `BugHunterEvent`, `EventPayloadMap`, `BUG_HUNTER_EVENTS` — typed payloads for the extension event bus                                                    |
+| **Messages** | `WebviewToHostMessage`, `HostToWebviewMessage` — the only shapes allowed over the webview `postMessage` bridge                                           |
 
 ## Rules
 

@@ -4,9 +4,9 @@
 
 ## Responsibilities
 
-- Render game state: bugs, issues, combat arena, activity log, dashboard.
+- Render game state: Bug Arena (idle/fighting bugs), Defeated Archive, Issues panel, Activity Log, Dashboard.
 - Send user intent to the extension via typed [`WebviewToHostMessage`](../shared/src/index.ts) (`ready`, `userAction`).
-- Apply incoming [`HostToWebviewMessage`](../shared/src/index.ts) (`stateUpdate`, `combatLog`, `ping`).
+- Apply incoming [`HostToWebviewMessage`](../shared/src/index.ts) (`stateUpdate`, `activityLog`, `combatLog`, `ping`).
 
 ## Bridge
 

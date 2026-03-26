@@ -72,6 +72,7 @@ export function spawnBugs(issues: Issue[]): Bug[] {
       defense,
       issue,
       abilities: [],
+      status: 'idle' as const,
     };
   });
 }

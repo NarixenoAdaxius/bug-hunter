@@ -1,5 +1,5 @@
 {
-  "name": "@bughunter/extension",
+  "name": "bug-hunter",
   "displayName": "Bug Hunter",
   "description": "Gamified code analysis — fight bugs in a turn-based RPG inside VS Code",
   "version": "0.0.1",
@@ -60,6 +60,10 @@
       {
         "command": "bugHunter.focus",
         "title": "Bug Hunter: Focus Sidebar"
+      },
+      {
+        "command": "bugHunter.rescanWorkspace",
+        "title": "Bug Hunter: Rescan workspace"
       }
     ],
     "keybindings": [
@@ -98,6 +102,47 @@
           "minimum": 100,
           "maximum": 10000,
           "description": "Debounce delay in milliseconds for file change and open events."
+        },
+        "bugHunter.workspaceScanEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "When enabled, scan JS/TS files across the workspace (on startup, save, and rescan command) and aggregate bugs. When disabled, only the active editor buffer is analyzed via file hooks."
+        },
+        "bugHunter.workspaceScanInclude": {
+          "type": "string",
+          "default": "**/*.{js,cjs,mjs,jsx,ts,tsx}",
+          "description": "Glob for workspace.findFiles (relative to the workspace folder)."
+        },
+        "bugHunter.workspaceScanExclude": {
+          "type": "string",
+          "default": "",
+          "description": "Extra comma-separated path fragments to skip (substring match, lowercased), in addition to node_modules, dist, .git, etc."
+        },
+        "bugHunter.workspaceMaxFileSizeBytes": {
+          "type": "number",
+          "default": 524288,
+          "minimum": 1024,
+          "maximum": 10485760,
+          "description": "Skip reading/analyzing files larger than this many bytes."
+        },
+        "bugHunter.workspaceScanConcurrency": {
+          "type": "number",
+          "default": 6,
+          "minimum": 1,
+          "maximum": 32,
+          "description": "Maximum concurrent file reads/analyses during a workspace scan."
+        },
+        "bugHunter.workspaceMaxUiIssues": {
+          "type": "number",
+          "default": 500,
+          "minimum": 50,
+          "maximum": 10000,
+          "description": "Cap issues sent to the sidebar (severity-sorted) for very large repos."
+        },
+        "bugHunter.workspaceLiveBuffers": {
+          "type": "boolean",
+          "default": true,
+          "description": "When workspace scan is on, also debounce-analysis open buffers on edit/tab change. Disable to only use disk scans (save + full rescan)."
         }
       }
     }
@@ -108,6 +153,7 @@
     "watch": "node ./scripts/esbuild.mjs --watch",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
     "vscode:prepublish": "npm run build:production",
+    "vsix": "node ./scripts/package-vsix.mjs",
     "clean": "rm -rf out media/webview",
     "test": "vitest run"
   },
@@ -120,6 +166,7 @@
   "devDependencies": {
     "@types/node": "^22.10.1",
     "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.3.2",
     "esbuild": "^0.25.12",
     "typescript": "^5.7.2",
     "vitest": "^3.2.4"

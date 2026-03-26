@@ -6,7 +6,7 @@ Product spec: [spec.md](./spec.md).
 
 | Resource                                                           | Purpose                                                    |
 | ------------------------------------------------------------------ | ---------------------------------------------------------- |
-| [README.md](./README.md)                                           | Install, build, run, CI, package index                     |
+| [README.md](./README.md)                                           | Install, build, run, `.vsix` packaging, CI, package index  |
 | [spec.md](./spec.md)                                               | Full product specification                                 |
 | This file (`AGENTS.md`)                                            | Tracks, ownership, integration rules, **shared changelog** |
 | [packages/shared/README.md](./packages/shared/README.md)           | Contract types and messages                                |
@@ -47,6 +47,8 @@ When you add or change exported types, event names, or message shapes:
 ### Changelog (shared)
 
 - 2025-03-24: Documented `GameState.xp` as progress toward next level (not lifetime total).
+- 2026-03-26: Added `BugStatus`, `Bug.status`, `Bug.defeatedAt`, `defeatedBugs` to `AppState`, `ActivityLogEntry` type, `activityLog` variant to `HostToWebviewMessage`. Attack now opens file instead of running simulated combat.
+- 2026-03-26: Extended `Issue` with optional `sourceUri`, `fileLabel` for workspace-scoped analysis UI.
 - 2026-03-24: Added `PlayerCombatStats`, `CombatLogEntry` (with `bugMiss`), `FileAnalyzedPayload`, `EventPayloadMap` to shared. Added `xpToNextLevel` to `GameState`. Added `player` and `combatLog` fields to `AppState`. Added `combatLog` variant to `HostToWebviewMessage`. Extended `userAction` payload with optional `bugId`.
 - _Scaffold: initial `AppState`, `Issue`, `Bug`, `WebviewToHostMessage`, `HostToWebviewMessage`._
 
@@ -59,3 +61,5 @@ From repo root: `npm run build` — builds `shared` → `game-engine` → `analy
 After `npm run build`, use **Run Extension** in VS Code ([.vscode/launch.json](.vscode/launch.json)) or:
 
 `code --extensionDevelopmentPath=/absolute/path/to/packages/extension`
+
+**Packaged install:** the extension workspace npm name is `bug-hunter` (required for valid `vsce` manifests). From repo root, `npm run package` (or `npm run vsix`, or `./scripts/package`) writes `bug-hunter-<version>.vsix` at the repository root; install with **Extensions: Install from VSIX…**. The extension crawls the workspace for JS/TS by default; use **Bug Hunter: Rescan workspace** after changing scan settings or to refresh on demand.

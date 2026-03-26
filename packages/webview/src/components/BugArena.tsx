@@ -17,7 +17,8 @@ function handleAttack(bugId: string) {
 }
 
 export function BugArena({ bugs }: Props) {
-  const list = bugs ?? [];
+  const all = bugs ?? [];
+  const list = all.filter((b) => b.status === 'idle' || b.status === 'fighting');
 
   if (list.length === 0) {
     return (
@@ -34,64 +35,70 @@ export function BugArena({ bugs }: Props) {
     <section className="rounded-lg border border-bh-border bg-bh-surface p-panel">
       <h2 className="text-xs font-semibold uppercase tracking-wide text-bh-muted mb-3">
         Bug arena
+        <span className="ml-2 text-bh-subtle font-normal">{list.length}</span>
       </h2>
       <ul className="space-y-3">
-        {list.map((bug) => {
-          const hpPct = bug.maxHp > 0 ? Math.round((bug.hp / bug.maxHp) * 100) : 0;
-          const alive = bug.hp > 0;
-          return (
-            <li
-              key={bug.id}
-              className={`rounded-lg border border-bh-border/90 bg-bh-card p-panel transition ${alive ? 'hover:border-slate-700' : 'opacity-50'}`}
-            >
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <div className="min-w-0">
-                  <p className="font-medium text-bh-text truncate">{bug.name}</p>
-                  <p className="text-xs text-bh-muted">{bug.type}</p>
-                </div>
-                <span
-                  className={`shrink-0 rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide border ${rarityStyles[bug.rarity]}`}
-                >
-                  {bug.rarity}
-                </span>
+        {list.map((bug) => (
+          <li
+            key={bug.id}
+            className={`rounded-lg border border-bh-border/90 bg-bh-card p-panel transition ${
+              bug.status === 'fighting'
+                ? 'border-amber-500/60 ring-1 ring-amber-500/30'
+                : 'hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <div className="min-w-0">
+                <p className="font-medium text-bh-text truncate">{bug.name}</p>
+                <p className="text-xs text-bh-muted">{bug.type}</p>
               </div>
-              <div
-                className="h-1.5 rounded-full bg-bh-border overflow-hidden mb-2"
-                role="progressbar"
-                aria-label={`${bug.name} HP`}
-                aria-valuenow={bug.hp}
-                aria-valuemin={0}
-                aria-valuemax={bug.maxHp}
+              <span
+                className={`shrink-0 rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide border ${rarityStyles[bug.rarity]}`}
               >
-                <div
-                  className="h-full rounded-full bg-bh-hp transition-all duration-300"
-                  style={{ width: `${hpPct}%` }}
-                />
-              </div>
-              <div className="flex justify-between text-[11px] text-bh-muted tabular-nums mb-2">
-                <span>
-                  HP {bug.hp}/{bug.maxHp}
+                {bug.rarity}
+              </span>
+            </div>
+            <div className="flex justify-between text-[11px] text-bh-muted tabular-nums mb-2">
+              <span>
+                ATK {bug.attack} · DEF {bug.defense}
+              </span>
+            </div>
+            {bug.issue.fileLabel != null && bug.issue.fileLabel.length > 0 && (
+              <p
+                className="text-[10px] text-bh-muted font-mono truncate mb-1"
+                title={bug.issue.sourceUri}
+              >
+                {bug.issue.fileLabel}
+                {bug.issue.line != null && `:${bug.issue.line}`}
+              </p>
+            )}
+            <p className="text-xs text-bh-subtle line-clamp-2 mb-2">{bug.issue.message}</p>
+
+            {bug.status === 'idle' && (
+              <button
+                onClick={() => handleAttack(bug.id)}
+                aria-label={`Attack ${bug.name}`}
+                className="w-full rounded bg-bh-attack hover:bg-bh-attack-hover active:bg-bh-attack-active text-xs font-semibold text-white py-1.5 transition-colors"
+              >
+                Attack
+              </button>
+            )}
+            {bug.status === 'fighting' && (
+              <div className="flex gap-2">
+                <span className="flex-1 text-center rounded bg-amber-600/30 border border-amber-500/40 text-amber-200 text-xs font-semibold py-1.5 motion-safe:animate-pulse">
+                  Fighting...
                 </span>
-                <span>
-                  ATK {bug.attack} · DEF {bug.defense}
-                </span>
-              </div>
-              <p className="text-xs text-bh-subtle line-clamp-2 mb-2">{bug.issue.message}</p>
-              {alive && (
                 <button
                   onClick={() => handleAttack(bug.id)}
-                  aria-label={`Attack ${bug.name}`}
-                  className="w-full rounded bg-bh-attack hover:bg-bh-attack-hover active:bg-bh-attack-active text-xs font-semibold text-white py-1.5 transition-colors"
+                  aria-label={`Go to ${bug.name} in file`}
+                  className="rounded bg-slate-700 hover:bg-slate-600 text-xs text-slate-200 px-3 py-1.5 transition-colors"
                 >
-                  Attack
+                  Go to file
                 </button>
-              )}
-              {!alive && (
-                <p className="text-xs text-bh-victory text-center font-medium">Defeated</p>
-              )}
-            </li>
-          );
-        })}
+              </div>
+            )}
+          </li>
+        ))}
       </ul>
     </section>
   );

@@ -44,6 +44,14 @@ export function IssuesPanel({ issues }: Props) {
                 </span>
               )}
             </div>
+            {issue.fileLabel != null && issue.fileLabel.length > 0 && (
+              <p
+                className="text-[10px] text-bh-muted/90 truncate mb-1 font-mono"
+                title={issue.sourceUri}
+              >
+                {issue.fileLabel}
+              </p>
+            )}
             <p className="text-bh-text-secondary/95 leading-snug">{issue.message}</p>
           </li>
         ))}

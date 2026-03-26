@@ -1,44 +1,29 @@
-import type { CombatLogEntry } from '@bughunter/shared';
+import type { ActivityLogEntry } from '@bughunter/shared';
 import { useRef, useEffect } from 'react';
 
 type Props = {
-  entries: CombatLogEntry[];
+  entries: ActivityLogEntry[];
 };
 
-function formatEntry(entry: CombatLogEntry): string {
+function formatEntry(entry: ActivityLogEntry): string {
   switch (entry.kind) {
-    case 'turnStart':
-      return `── Turn ${entry.turn} ──`;
-    case 'playerMiss':
-      return `You missed!`;
-    case 'bugMiss':
-      return `Bug missed!`;
-    case 'playerHit':
-      return `You hit for ${entry.damage} dmg${entry.critical ? ' (CRIT!)' : ''}  →  Bug HP: ${entry.bugHpAfter}`;
-    case 'bugHit':
-      return `Bug hit you for ${entry.damage} dmg${entry.critical ? ' (CRIT!)' : ''}  →  Your HP: ${entry.playerHpAfter}`;
-    case 'bugDefeated':
-      return `Bug defeated! +${entry.xpAwarded} XP`;
-    case 'playerDefeated':
-      return `You were defeated…`;
+    case 'engaging':
+      return `Engaging ${entry.bugName} in ${entry.fileLabel}…`;
+    case 'defeated':
+      return `Defeated ${entry.bugName}! +${entry.xpAwarded} XP`;
+    case 'scanning':
+      return entry.message;
   }
 }
 
-function entryColor(kind: CombatLogEntry['kind']): string {
+function entryColor(kind: ActivityLogEntry['kind']): string {
   switch (kind) {
-    case 'turnStart':
-      return 'text-slate-500';
-    case 'playerMiss':
-    case 'bugMiss':
-      return 'text-slate-400';
-    case 'playerHit':
-      return 'text-emerald-300';
-    case 'bugHit':
-      return 'text-rose-300';
-    case 'bugDefeated':
+    case 'engaging':
       return 'text-amber-300';
-    case 'playerDefeated':
-      return 'text-rose-400';
+    case 'defeated':
+      return 'text-emerald-300';
+    case 'scanning':
+      return 'text-slate-400';
   }
 }
 
@@ -68,7 +53,7 @@ export function ActivityLog({ entries }: Props) {
       <ul
         ref={scrollRef}
         aria-live="polite"
-        aria-label="Combat activity log"
+        aria-label="Activity log"
         className="space-y-0.5 max-h-48 overflow-y-auto pr-1 font-mono text-[11px] leading-relaxed"
       >
         {entries.map((entry, i) => (

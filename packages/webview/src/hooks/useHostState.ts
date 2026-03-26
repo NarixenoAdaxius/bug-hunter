@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
-import type { AppState, CombatLogEntry, HostToWebviewMessage } from '@bughunter/shared';
+import type { ActivityLogEntry, AppState, HostToWebviewMessage } from '@bughunter/shared';
 import { vscode } from '../vscode';
 
 function isHostMessage(data: unknown): data is HostToWebviewMessage {
   if (data == null || typeof data !== 'object' || !('type' in data)) return false;
   const t = (data as { type: unknown }).type;
-  return t === 'stateUpdate' || t === 'combatLog' || t === 'ping';
+  return t === 'stateUpdate' || t === 'activityLog' || t === 'combatLog' || t === 'ping';
 }
 
 export type HostState = Partial<AppState> & {
-  activityLog: CombatLogEntry[];
+  activityLog: ActivityLogEntry[];
 };
 
 export function useHostState() {
@@ -24,7 +24,7 @@ export function useHostState() {
           ...(prev ?? { activityLog: [] }),
           ...data.payload,
         }));
-      } else if (data.type === 'combatLog') {
+      } else if (data.type === 'activityLog') {
         setState((prev) => {
           if (!prev) return { activityLog: data.payload };
           return {

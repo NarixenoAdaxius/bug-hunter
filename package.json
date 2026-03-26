@@ -6,7 +6,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @bughunter/shared && npm run build -w @bughunter/game-engine && npm run build -w @bughunter/analyzers && npm run build -w @bughunter/ai && npm run build -w @bughunter/webview && npm run build -w @bughunter/extension",
+    "build": "npm run build -w @bughunter/shared && npm run build -w @bughunter/game-engine && npm run build -w @bughunter/analyzers && npm run build -w @bughunter/ai && npm run build -w @bughunter/webview && npm run build -w bug-hunter",
+    "vsix": "npm run vsix -w bug-hunter",
+    "package": "npm run vsix",
     "compile": "npm run build",
     "test": "npm run test --workspaces --if-present",
     "lint": "eslint .",

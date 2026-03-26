@@ -1,6 +1,7 @@
 import { ActivityLog } from './components/ActivityLog';
 import { BugArena } from './components/BugArena';
 import { Dashboard } from './components/Dashboard';
+import { DefeatedArchive } from './components/DefeatedArchive';
 import { IssuesPanel } from './components/IssuesPanel';
 import { useHostState } from './hooks/useHostState';
 
@@ -24,6 +25,7 @@ export function App() {
           <>
             <Dashboard game={state.game} session={state.session} />
             <BugArena bugs={state.bugs} />
+            <DefeatedArchive bugs={state.defeatedBugs} />
             <ActivityLog entries={state.activityLog} />
             <IssuesPanel issues={state.issues} />
           </>

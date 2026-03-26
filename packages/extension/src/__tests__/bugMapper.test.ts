@@ -53,4 +53,9 @@ describe('spawnBugs', () => {
     const bugs = spawnBugs([issue]);
     expect(bugs[0].issue).toBe(issue);
   });
+
+  it('spawns bugs with idle status', () => {
+    const bugs = spawnBugs([makeIssue()]);
+    expect(bugs[0].status).toBe('idle');
+  });
 });

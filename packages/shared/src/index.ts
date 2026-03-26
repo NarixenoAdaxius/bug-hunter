@@ -2,12 +2,18 @@
 
 export type BugRarity = 'common' | 'rare' | 'epic' | 'boss';
 
+export type BugStatus = 'idle' | 'fighting' | 'defeated';
+
 export type Issue = {
   id: string;
   message: string;
   severity: 'info' | 'warning' | 'error';
   line?: number;
   column?: number;
+  /** Workspace file URI string (e.g. `file:///...` or `vscode-remote://...`). */
+  sourceUri?: string;
+  /** Short path for UI (usually workspace-relative). */
+  fileLabel?: string;
 };
 
 export type Bug = {
@@ -21,6 +27,9 @@ export type Bug = {
   defense: number;
   issue: Issue;
   abilities: string[];
+  status: BugStatus;
+  /** Epoch ms when the bug was defeated (only set when status === 'defeated'). */
+  defeatedAt?: number;
 };
 
 export type PlayerCombatStats = {
@@ -48,6 +57,15 @@ export type SessionStats = {
   bugsDefeated: number;
 };
 
+/** Activity log entries replace old RPG combat log. */
+export type ActivityLogEntry =
+  | { kind: 'engaging'; bugName: string; fileLabel: string }
+  | { kind: 'defeated'; bugName: string; xpAwarded: number }
+  | { kind: 'scanning'; message: string };
+
+/**
+ * @deprecated Kept for game-engine compatibility; not used in the main attack flow.
+ */
 export type CombatLogEntry =
   | { kind: 'turnStart'; turn: number }
   | { kind: 'playerMiss'; turn: number }
@@ -73,9 +91,11 @@ export type AppState = {
   game: GameState;
   player: PlayerCombatStats;
   bugs: Bug[];
+  defeatedBugs: Bug[];
   issues: Issue[];
   settings: Settings;
   session: SessionStats;
+  activityLog: ActivityLogEntry[];
   combatLog: CombatLogEntry[];
 };
 
@@ -112,5 +132,6 @@ export type WebviewToHostMessage =
 /** Messages from the extension host to the webview. */
 export type HostToWebviewMessage =
   | { type: 'stateUpdate'; payload: Partial<AppState> }
+  | { type: 'activityLog'; payload: ActivityLogEntry[] }
   | { type: 'combatLog'; payload: CombatLogEntry[] }
   | { type: 'ping' };

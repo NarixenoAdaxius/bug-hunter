@@ -2,6 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import type {
+  ActivityLogEntry,
   AppState,
   CombatLogEntry,
   HostToWebviewMessage,
@@ -70,6 +71,11 @@ export class BugHunterViewProvider implements vscode.WebviewViewProvider {
     if (this.view) {
       this.view.webview.html = this.getHtmlForWebview(this.view.webview);
     }
+  }
+
+  postActivityLog(entries: ActivityLogEntry[]): void {
+    const message: HostToWebviewMessage = { type: 'activityLog', payload: entries };
+    void this.view?.webview.postMessage(message);
   }
 
   postCombatLog(log: CombatLogEntry[]): void {

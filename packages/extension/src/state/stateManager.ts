@@ -4,9 +4,11 @@ export const DEFAULT_APP_STATE: AppState = {
   game: { level: 1, xp: 0, xpToNextLevel: 100 },
   player: { attack: 12, defense: 4, hp: 100, maxHp: 100 },
   bugs: [],
+  defeatedBugs: [],
   issues: [],
   settings: { humorLevel: 1, aiEnabled: false },
   session: { bugsDefeated: 0 },
+  activityLog: [],
   combatLog: [],
 };
 

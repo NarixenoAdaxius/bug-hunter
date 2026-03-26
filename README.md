@@ -1,6 +1,6 @@
 # Bug Hunter
 
-A gamified developer intelligence platform for VS Code that turns code analysis into an interactive, turn-based combat experience in the sidebar.
+A gamified developer intelligence platform for VS Code that turns code analysis into an interactive bug-hunting experience in the sidebar — find bugs, attack them by navigating to the source, fix the code, and watch them fall.
 
 ## Documentation
 
@@ -12,19 +12,19 @@ A gamified developer intelligence platform for VS Code that turns code analysis 
 
 ### Package index
 
-| Package                  | Path                                         | Role                                   |
-| ------------------------ | -------------------------------------------- | -------------------------------------- |
-| `@bughunter/shared`      | [packages/shared](packages/shared)           | Types and extension ↔ webview messages |
-| `@bughunter/extension`   | [packages/extension](packages/extension)     | VS Code extension host                 |
-| `@bughunter/webview`     | [packages/webview](packages/webview)         | React + Tailwind sidebar UI            |
-| `@bughunter/analyzers`   | [packages/analyzers](packages/analyzers)     | Analysis orchestrator and rules        |
-| `@bughunter/game-engine` | [packages/game-engine](packages/game-engine) | Combat, XP, progression (pure TS)      |
-| `@bughunter/ai`          | [packages/ai](packages/ai)                   | AI provider interface + stub           |
-| `@bughunter/cpp-engine`  | [packages/cpp-engine](packages/cpp-engine)   | Optional N-API native analyzer         |
+| Package                  | Path                                         | Role                                                                      |
+| ------------------------ | -------------------------------------------- | ------------------------------------------------------------------------- |
+| `@bughunter/shared`      | [packages/shared](packages/shared)           | Types and extension ↔ webview messages                                    |
+| `bug-hunter`             | [packages/extension](packages/extension)     | VS Code extension host (unscoped npm name; required for `.vsix` / `vsce`) |
+| `@bughunter/webview`     | [packages/webview](packages/webview)         | React + Tailwind sidebar UI                                               |
+| `@bughunter/analyzers`   | [packages/analyzers](packages/analyzers)     | Analysis orchestrator and rules                                           |
+| `@bughunter/game-engine` | [packages/game-engine](packages/game-engine) | Combat, XP, progression (pure TS)                                         |
+| `@bughunter/ai`          | [packages/ai](packages/ai)                   | AI provider interface + stub                                              |
+| `@bughunter/cpp-engine`  | [packages/cpp-engine](packages/cpp-engine)   | Optional N-API native analyzer                                            |
 
 ## Overview
 
-Bug Hunter analyzes your code in real time, spawns **bugs** from detected issues, and lets you fight them in turn-based combat — all inside a VS Code sidebar webview.
+Bug Hunter scans your workspace for code issues, spawns **bugs** from them, and lets you hunt them down by navigating to the source and fixing the code — all tracked inside a VS Code sidebar webview with XP, levels, and a defeated archive.
 
 ## Monorepo layout
 
@@ -56,6 +56,22 @@ CLI alternative:
 code --extensionDevelopmentPath=/absolute/path/to/packages/extension
 ```
 
+### Pack a `.vsix` (installable build)
+
+From the repository root:
+
+```bash
+npm run package
+```
+
+Same as `npm run vsix`. You can also run the repo script directly (executable after clone: `chmod +x scripts/package`):
+
+```bash
+./scripts/package
+```
+
+Writes **`bug-hunter-<version>.vsix`** at the repo root (gitignored). In VS Code: **Extensions: Install from VSIX…** and select that file.
+
 ### Quality checks
 
 ```bash
@@ -71,11 +87,15 @@ npm test
 
 ## How it works
 
-1. **File hooks** detect when you open or edit a file (debounced).
-2. The **analyzer** scans JS/TS-like sources and emits **issues**.
-3. Issues become **bugs** with stats (HP, attack, defense, rarity).
-4. You **attack** bugs in the sidebar; the **game engine** resolves turns, XP, and level-ups.
-5. State and **combat log** updates flow to the webview via typed messages from `@bughunter/shared`.
+1. **Workspace scan** (default): on load, after folder changes, and on save, the extension discovers matching files with `vscode.workspace.findFiles`, reads them with `workspace.fs` (works over Remote-SSH), and runs the **analyzer** on each file. Issues are merged across the repo (with a configurable UI cap). This is **not** the VS Code Problems list (e.g. ESLint / Markdownlint live diagnostics).
+2. **Live buffers** (optional): debounced **file hooks** refresh the slice for files you are editing when “workspace live buffers” is enabled.
+3. Issues become **bugs** with stats (attack, defense, rarity); Insights shows **file paths** when present.
+4. **Attack = navigate to bug**: clicking Attack opens the file at the issue line and sets the bug to "fighting" status. Fix the code; on save the watcher re-analyzes and automatically marks the bug **defeated** once the issue disappears, awarding XP.
+5. **Defeated archive**: defeated bugs move out of the Bug Arena into a collapsible Defeated section.
+6. **Per-workspace state**: game progress, bugs, and defeated archive persist per workspace via VS Code `workspaceState` — each project has its own independent Bug Hunter session.
+7. Activity log and state updates flow to the webview via typed messages from `@bughunter/shared`.
+
+Use the command **Bug Hunter: Rescan workspace** for a full crawl on demand. Tune globs and limits under **Settings → Bug Hunter** (workspace include/exclude, max file size, concurrency, max issues in UI).
 
 ## License
 

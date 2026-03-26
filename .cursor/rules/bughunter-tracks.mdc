@@ -1,0 +1,16 @@
+---
+description: Bug Hunter multi-agent track boundaries and shared contracts
+alwaysApply: true
+---
+
+# Bug Hunter — agent boundaries
+
+Read [AGENTS.md](AGENTS.md) at the repo root before editing.
+
+- **Track 1** — Owns [packages/extension](packages/extension): VS Code API, webview bridge, lifecycle. Do not put React UI here.
+- **Track 2** — Owns [packages/webview](packages/webview): React + Tailwind only; communicate via typed messages from `@bughunter/shared`.
+- **Track 3** — Owns [packages/analyzers](packages/analyzers): analysis and `Issue` output; no VS Code or React.
+- **Track 4** — Owns [packages/game-engine](packages/game-engine): game rules; no VS Code or React.
+- **Track 5** — Owns [packages/cpp-engine](packages/cpp-engine) / future native: C++ and N-API.
+
+**Shared types and messages** live in [packages/shared](packages/shared). Any change to exported APIs must stay in sync with [AGENTS.md](AGENTS.md) changelog.

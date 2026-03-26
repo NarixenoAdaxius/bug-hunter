@@ -1,0 +1,13 @@
+.vscode/**
+src/**
+scripts/**
+node_modules/**
+tsconfig.json
+*.map
+*.ts
+!out/**/*.js
+!media/**
+!package.json
+!README.md
+!CHANGELOG.md
+!LICENSE

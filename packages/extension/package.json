@@ -1,0 +1,127 @@
+{
+  "name": "@bughunter/extension",
+  "displayName": "Bug Hunter",
+  "description": "Gamified code analysis — fight bugs in a turn-based RPG inside VS Code",
+  "version": "0.0.1",
+  "publisher": "bughunter",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bughunter/bughunter"
+  },
+  "bugs": {
+    "url": "https://github.com/bughunter/bughunter/issues"
+  },
+  "homepage": "https://github.com/bughunter/bughunter#readme",
+  "keywords": [
+    "gamification",
+    "code-analysis",
+    "linter",
+    "bugs",
+    "rpg",
+    "developer-tools"
+  ],
+  "categories": [
+    "Linters",
+    "Education",
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bug-hunter",
+          "title": "Bug Hunter",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "bug-hunter": [
+        {
+          "type": "webview",
+          "id": "bugHunter.sidebar",
+          "name": "Bug Hunter"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "bugHunter.refresh",
+        "title": "Bug Hunter: Refresh Webview",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "bugHunter.focus",
+        "title": "Bug Hunter: Focus Sidebar"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "bugHunter.focus",
+        "key": "ctrl+shift+b",
+        "mac": "cmd+shift+b"
+      },
+      {
+        "command": "bugHunter.refresh",
+        "key": "ctrl+shift+alt+r",
+        "mac": "cmd+shift+alt+r",
+        "when": "view.bugHunter.sidebar.visible"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "bugHunter.refresh",
+          "when": "view == bugHunter.sidebar",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Bug Hunter",
+      "properties": {
+        "bugHunter.fileHooksEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "When enabled, debounced file open/change events emit FILE_ANALYZED on the extension event bus (for future analyzers)."
+        },
+        "bugHunter.fileHookDebounceMs": {
+          "type": "number",
+          "default": 500,
+          "minimum": 100,
+          "maximum": 10000,
+          "description": "Debounce delay in milliseconds for file change and open events."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node ./scripts/esbuild.mjs && node ./scripts/copy-webview.mjs",
+    "build:production": "node ./scripts/esbuild.mjs --production && node ./scripts/copy-webview.mjs",
+    "watch": "node ./scripts/esbuild.mjs --watch",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit",
+    "vscode:prepublish": "npm run build:production",
+    "clean": "rm -rf out media/webview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@bughunter/ai": "*",
+    "@bughunter/analyzers": "*",
+    "@bughunter/game-engine": "*",
+    "@bughunter/shared": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  }
+}

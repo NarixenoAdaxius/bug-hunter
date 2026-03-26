@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+out/
+*.tsbuildinfo
+
+# VS Code extension
+*.vsix
+.vscode-test/
+
+# Tests & coverage
+coverage/
+*.lcov
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment (secrets)
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Editors / IDEs
+.idea/
+*.swp
+*~
+
+# Native / C++ build artifacts
+native/build/
+packages/cpp-engine/build/
+*.o
+*.so
+*.dylib
+*.node
+
+# Copied webview build artifacts (produced by extension build)
+packages/extension/media/webview/

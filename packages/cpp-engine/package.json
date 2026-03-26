@@ -1,0 +1,31 @@
+{
+  "name": "@bughunter/cpp-engine",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Native C++ analyzer (N-API); optional build — not part of root npm run build",
+  "type": "module",
+  "main": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "rebuild": "node-gyp rebuild",
+    "build:cmake": "cmake-js compile"
+  },
+  "dependencies": {
+    "bindings": "^1.5.0"
+  },
+  "devDependencies": {
+    "cmake-js": "^8.0.0",
+    "node-addon-api": "^8.3.0",
+    "node-gyp": "^11.0.0"
+  },
+  "cmake-js": {
+    "runtime": "node"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: build - bughunter",
+      "type": "npm",
+      "script": "build",
+      "path": "${workspaceFolder}",
+      "group": "build",
+      "presentation": { "reveal": "silent" },
+      "problemMatcher": ["$tsc"]
+    }
+  ]
+}

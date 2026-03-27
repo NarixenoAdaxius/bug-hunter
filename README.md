@@ -105,6 +105,14 @@ npm test
 
 Use the command **Bug Hunter: Rescan workspace** for a full crawl on demand. Tune globs and limits under **Settings → Bug Hunter** (workspace include/exclude, max file size, concurrency, max issues in UI).
 
+## Changelog
+
+### 0.0.4 (2026-03-27)
+
+- **Boogles store:** Home / Boogles store tab (when the sidebar store setting is on), card layout with short item descriptions, and a companion-panel control to open the store when no pet is equipped.
+- **Webview assets:** The extension injects `globalThis.__BUGHUNTER_WEBVIEW_BASE__` (CSP nonce–backed) so `storeAssetUrl()` resolves public images correctly in the packaged webview; Vite dev still uses `import.meta.env.BASE_URL`.
+- **Images:** Avatar, companion pet, and store thumbnails fall back to emoji glyphs if an asset fails to load.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

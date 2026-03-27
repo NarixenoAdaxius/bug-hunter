@@ -6,20 +6,20 @@ The npm workspace package name is **`bug-hunter`** (not scoped) because the VS C
 
 ## Responsibilities
 
-| Area           | Location (overview)                                                     |
-| -------------- | ----------------------------------------------------------------------- |
-| Lifecycle      | `src/extension.ts`                                                      |
-| Commands       | `src/commands/registerCommands.ts`                                      |
-| DI             | `src/di/container.ts`                                                   |
-| Events         | `src/bus/eventBus.ts`                                                   |
-| Workspace scan | `src/workspace/` (`WorkspaceCrawler`, `WorkspaceIssueIndex`)            |
-| File hooks     | `src/files/fileHooks.ts` (live buffer refresh when enabled)             |
-| Analysis       | `@bughunter/analyzers` from disk buffers + open documents               |
-| Game state     | `src/state/stateManager.ts` + `@bughunter/game-engine`                  |
-| Bugs           | `src/game/bugMapper.ts`, `mergeSpawnedBugs.ts`                          |
-| Attack + watch | `src/di/container.ts` — open file, set fighting, watcher marks defeated |
-| Persistence    | `context.workspaceState` — per-workspace AppState via debounced writes  |
-| Webview        | `src/webview/BugHunterViewProvider.ts`                                  |
+| Area           | Location (overview)                                                                                                         |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Lifecycle      | `src/extension.ts`                                                                                                          |
+| Commands       | `src/commands/registerCommands.ts`                                                                                          |
+| DI             | `src/di/container.ts`                                                                                                       |
+| Events         | `src/bus/eventBus.ts`                                                                                                       |
+| Workspace scan | `src/workspace/` (`WorkspaceCrawler`, `WorkspaceIssueIndex`)                                                                |
+| File hooks     | `src/files/fileHooks.ts` (live buffer refresh when enabled)                                                                 |
+| Analysis       | `@bughunter/analyzers` from disk buffers + open documents                                                                   |
+| Game state     | `src/state/stateManager.ts` + `@bughunter/game-engine`                                                                      |
+| Bugs           | `src/game/bugMapper.ts`, `mergeSpawnedBugs.ts`                                                                              |
+| Attack + watch | `src/di/container.ts` — open file, set fighting, watcher marks defeated                                                     |
+| Persistence    | `context.workspaceState` — per-workspace AppState via debounced writes                                                      |
+| Webview        | `src/webview/BugHunterViewProvider.ts` — CSP, rewrites asset URLs, injects `__BUGHUNTER_WEBVIEW_BASE__` for React `img` src |
 
 ## Commands
 

@@ -110,6 +110,10 @@ export class BugHunterViewProvider implements vscode.WebviewViewProvider {
 
   private transformHtml(webview: vscode.Webview, webviewRoot: vscode.Uri, html: string): string {
     const nonce = getNonce();
+    /** Root URI for `media/webview` — React img `src` cannot use relative URLs reliably in webviews. */
+    const webviewUriRoot = webview.asWebviewUri(webviewRoot).toString();
+    const webviewUriBase = webviewUriRoot.endsWith('/') ? webviewUriRoot : `${webviewUriRoot}/`;
+    const bootScript = `<script nonce="${nonce}">globalThis.__BUGHUNTER_WEBVIEW_BASE__=${JSON.stringify(webviewUriBase)};</script>`;
     const csp = [
       `default-src 'none'`,
       `style-src ${webview.cspSource} 'nonce-${nonce}'`,
@@ -120,7 +124,7 @@ export class BugHunterViewProvider implements vscode.WebviewViewProvider {
 
     let withCsp = html.replace(
       /<head([^>]*)>/i,
-      `<head$1><meta http-equiv="Content-Security-Policy" content="${csp}">`
+      `<head$1><meta http-equiv="Content-Security-Policy" content="${csp}">${bootScript}`
     );
 
     withCsp = withCsp.replace(/(href|src)="([^"]+)"/g, (_match, attr: string, rel: string) => {

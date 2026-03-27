@@ -4,18 +4,18 @@ Product spec: [spec.md](./spec.md).
 
 ## Documentation map
 
-| Resource                                                           | Purpose                                                    |
-| ------------------------------------------------------------------ | ---------------------------------------------------------- |
-| [README.md](./README.md)                                           | Install, build, run, `.vsix` packaging, CI, package index  |
-| [spec.md](./spec.md)                                               | Full product specification                                 |
-| This file (`AGENTS.md`)                                            | Tracks, ownership, integration rules, **shared changelog** |
-| [packages/shared/README.md](./packages/shared/README.md)           | Contract types and messages                                |
-| [packages/extension/README.md](./packages/extension/README.md)     | Extension host, commands, settings                         |
-| [packages/webview/README.md](./packages/webview/README.md)         | Sidebar UI bridge rules                                    |
-| [packages/analyzers/README.md](./packages/analyzers/README.md)     | Orchestrator and rules                                     |
-| [packages/game-engine/README.md](./packages/game-engine/README.md) | Combat and progression                                     |
-| [packages/ai/README.md](./packages/ai/README.md)                   | AI provider stub                                           |
-| [packages/cpp-engine/README.md](./packages/cpp-engine/README.md)   | Optional native N-API module                               |
+| Resource                                                           | Purpose                                                                  |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| [README.md](./README.md)                                           | Install, build, run, `.vsix` packaging, CI, package index, **changelog** |
+| [spec.md](./spec.md)                                               | Full product specification                                               |
+| This file (`AGENTS.md`)                                            | Tracks, ownership, integration rules, **shared changelog**               |
+| [packages/shared/README.md](./packages/shared/README.md)           | Contract types and messages                                              |
+| [packages/extension/README.md](./packages/extension/README.md)     | Extension host, commands, settings                                       |
+| [packages/webview/README.md](./packages/webview/README.md)         | Sidebar UI bridge rules                                                  |
+| [packages/analyzers/README.md](./packages/analyzers/README.md)     | Orchestrator and rules                                                   |
+| [packages/game-engine/README.md](./packages/game-engine/README.md) | Combat and progression                                                   |
+| [packages/ai/README.md](./packages/ai/README.md)                   | AI provider stub                                                         |
+| [packages/cpp-engine/README.md](./packages/cpp-engine/README.md)   | Optional native N-API module                                             |
 
 ## Tracks and ownership
 

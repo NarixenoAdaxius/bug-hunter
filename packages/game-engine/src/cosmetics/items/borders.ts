@@ -9,6 +9,7 @@ export const BORDER_STORE_ITEMS: readonly StoreItem[] = [
     category: 'border',
     glyph: '✦',
     assetPath: 'store/borders/border-gold.svg',
+    description: 'Warm gold trim around your header avatar — trophy-case energy.',
   },
   {
     id: 'border-holo',
@@ -17,5 +18,6 @@ export const BORDER_STORE_ITEMS: readonly StoreItem[] = [
     category: 'border',
     glyph: '✧',
     assetPath: 'store/borders/border-holo.svg',
+    description: 'Iridescent edge that shifts with the theme — sci-fi polish.',
   },
 ];

@@ -1,13 +1,35 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CosmeticsState } from '@bughunter/shared';
-import { findStoreItem } from '@bughunter/game-engine';
+import { findStoreItem, type StoreItem } from '@bughunter/game-engine';
 import { storeAssetUrl } from '../storeAssetUrl';
+
+function PetFace({ item }: { item: StoreItem }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  if (item.assetPath && !imgFailed) {
+    return (
+      <img
+        src={storeAssetUrl(item.assetPath)}
+        alt=""
+        className="h-11 w-11 object-contain pointer-events-none"
+        draggable={false}
+        onError={() => setImgFailed(true)}
+      />
+    );
+  }
+  return (
+    <span className="pointer-events-none" aria-hidden>
+      {item.glyph}
+    </span>
+  );
+}
 
 type Props = {
   cosmetics: CosmeticsState;
+  /** Opens the Boogles store tab when the user has no pet equipped. */
+  onOpenStore?: () => void;
 };
 
-export function CompanionPet({ cosmetics }: Props) {
+export function CompanionPet({ cosmetics, onOpenStore }: Props) {
   const id = cosmetics.equippedPetId;
   const item = id ? findStoreItem(id) : undefined;
   const boxRef = useRef<HTMLDivElement>(null);
@@ -60,9 +82,18 @@ export function CompanionPet({ cosmetics }: Props) {
         <h2 className="text-xs font-semibold uppercase tracking-wide text-bh-muted mb-2">
           Companion
         </h2>
-        <p className="text-xs text-bh-muted text-center py-6">
-          Buy and equip a pet from the store to keep you company while you debug.
-        </p>
+        <div className="text-xs text-bh-muted text-center py-6 space-y-3">
+          <p>Buy and equip a pet from the store to keep you company while you debug.</p>
+          {onOpenStore ? (
+            <button
+              type="button"
+              className="rounded-md px-3 py-1.5 text-xs font-medium bg-bh-border text-bh-text-secondary hover:bg-bh-border-subtle"
+              onClick={onOpenStore}
+            >
+              Open Boogles store
+            </button>
+          ) : null}
+        </div>
       </section>
     );
   }
@@ -86,18 +117,7 @@ export function CompanionPet({ cosmetics }: Props) {
           onPointerCancel={onPointerUp}
           aria-label={`${item.name} — drag to move`}
         >
-          {item.assetPath ? (
-            <img
-              src={storeAssetUrl(item.assetPath)}
-              alt=""
-              className="h-11 w-11 object-contain pointer-events-none"
-              draggable={false}
-            />
-          ) : (
-            <span className="pointer-events-none" aria-hidden>
-              {item.glyph}
-            </span>
-          )}
+          <PetFace key={item.id} item={item} />
         </button>
       </div>
       <p className="text-[10px] text-bh-muted mt-2 text-center">

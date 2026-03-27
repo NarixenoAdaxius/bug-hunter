@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { ActivityLog } from './components/ActivityLog';
 import { BugArena } from './components/BugArena';
 import { CompanionPet } from './components/CompanionPet';
 import { Dashboard } from './components/Dashboard';
 import { DefeatedArchive } from './components/DefeatedArchive';
 import { IssuesPanel } from './components/IssuesPanel';
-import { StorePanel } from './components/StorePanel';
+import { StorePage } from './components/StorePage';
 import { useHostState } from './hooks/useHostState';
 import { DEFAULT_COSMETICS, DEFAULT_SIDEBAR_UI_VISIBILITY } from '@bughunter/shared';
 import type { SidebarUiVisibility } from '@bughunter/shared';
@@ -13,6 +14,8 @@ import { borderRingClass } from './profile/profileVisuals';
 import { storeAssetUrl } from './storeAssetUrl';
 
 function AvatarBadge({ avatarId }: { avatarId: string }) {
+  const [imgFailed, setImgFailed] = useState(false);
+
   if (avatarId === 'avatar-default') {
     return <span className="text-sm font-bold text-bh-text-secondary">BH</span>;
   }
@@ -20,13 +23,14 @@ function AvatarBadge({ avatarId }: { avatarId: string }) {
   if (!item) {
     return <span className="text-sm font-bold text-bh-text-secondary">?</span>;
   }
-  if (item.assetPath) {
+  if (item.assetPath && !imgFailed) {
     return (
       <img
         src={storeAssetUrl(item.assetPath)}
         alt=""
         className="h-8 w-8 object-contain"
         draggable={false}
+        onError={() => setImgFailed(true)}
       />
     );
   }
@@ -41,6 +45,8 @@ function showCompanionPanel(ui: SidebarUiVisibility, equippedPetId: string | nul
   return true;
 }
 
+type MainTab = 'home' | 'store';
+
 export function App() {
   const state = useHostState();
   const ready = state != null;
@@ -48,6 +54,17 @@ export function App() {
   const themeId = cosmetics.equippedPanelThemeId;
   const ui = state?.uiVisibility ?? DEFAULT_SIDEBAR_UI_VISIBILITY;
   const showCompanion = showCompanionPanel(ui, cosmetics.equippedPetId);
+  const showStore = ui.showStore;
+  const [activeTab, setActiveTab] = useState<MainTab>('home');
+  /** When the store is hidden by settings, always show home content without mutating tab state. */
+  const mainTab: MainTab = showStore ? activeTab : 'home';
+
+  const tabButtonClass = (tab: MainTab) =>
+    `flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
+      activeTab === tab
+        ? 'bg-bh-card text-bh-text border border-bh-border'
+        : 'text-bh-muted hover:text-bh-text-secondary border border-transparent'
+    }`;
 
   return (
     <div
@@ -61,7 +78,7 @@ export function App() {
               className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-bh-card text-sm font-bold text-bh-text-secondary ${borderRingClass(cosmetics.equippedBorderId)}`}
               aria-hidden
             >
-              <AvatarBadge avatarId={cosmetics.equippedAvatarId} />
+              <AvatarBadge key={cosmetics.equippedAvatarId} avatarId={cosmetics.equippedAvatarId} />
             </div>
           ) : null}
           <div className="min-w-0 flex-1">
@@ -76,22 +93,51 @@ export function App() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto px-panel py-panel space-y-3 min-h-0">
-        {state == null ? (
-          <p className="text-sm text-bh-muted py-10 text-center">Waiting for extension…</p>
-        ) : (
-          <>
-            {ui.showDashboard ? (
-              <Dashboard game={state.game} session={state.session} cosmetics={cosmetics} />
-            ) : null}
-            {showCompanion ? <CompanionPet cosmetics={cosmetics} /> : null}
-            {ui.showStore ? <StorePanel cosmetics={cosmetics} /> : null}
-            {ui.showBugArena ? <BugArena bugs={state.bugs} /> : null}
-            {ui.showDefeatedArchive ? <DefeatedArchive bugs={state.defeatedBugs} /> : null}
-            {ui.showActivityLog ? <ActivityLog entries={state.activityLog} /> : null}
-            {ui.showIssuesPanel ? <IssuesPanel issues={state.issues} /> : null}
-          </>
-        )}
+      <main className="flex-1 flex flex-col min-h-0">
+        {ready && showStore ? (
+          <nav
+            className="shrink-0 flex gap-1.5 px-panel pt-2 pb-2 border-b border-bh-border"
+            aria-label="Sidebar sections"
+          >
+            <button
+              type="button"
+              className={tabButtonClass('home')}
+              onClick={() => setActiveTab('home')}
+            >
+              Home
+            </button>
+            <button
+              type="button"
+              className={tabButtonClass('store')}
+              onClick={() => setActiveTab('store')}
+            >
+              Boogles store
+            </button>
+          </nav>
+        ) : null}
+        <div className="flex-1 overflow-y-auto px-panel py-panel space-y-3 min-h-0">
+          {state == null ? (
+            <p className="text-sm text-bh-muted py-10 text-center">Waiting for extension…</p>
+          ) : mainTab === 'store' ? (
+            <StorePage cosmetics={cosmetics} />
+          ) : (
+            <>
+              {ui.showDashboard ? (
+                <Dashboard game={state.game} session={state.session} cosmetics={cosmetics} />
+              ) : null}
+              {showCompanion ? (
+                <CompanionPet
+                  cosmetics={cosmetics}
+                  onOpenStore={showStore ? () => setActiveTab('store') : undefined}
+                />
+              ) : null}
+              {ui.showBugArena ? <BugArena bugs={state.bugs} /> : null}
+              {ui.showDefeatedArchive ? <DefeatedArchive bugs={state.defeatedBugs} /> : null}
+              {ui.showActivityLog ? <ActivityLog entries={state.activityLog} /> : null}
+              {ui.showIssuesPanel ? <IssuesPanel issues={state.issues} /> : null}
+            </>
+          )}
+        </div>
       </main>
     </div>
   );

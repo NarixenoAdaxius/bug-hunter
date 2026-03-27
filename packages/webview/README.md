@@ -4,7 +4,7 @@
 
 ## Responsibilities
 
-- Render game state: Dashboard (XP, Boogles), themed shell, optional companion pet, Boogles store, Bug Arena, Defeated Archive, Activity Log, Issues panel. Section visibility follows `uiVisibility` on `stateUpdate` (from VS Code `bugHunter.sidebar.*` settings).
+- Render game state: Dashboard (XP, Boogles), themed shell, optional companion pet, **Boogles store** (dedicated tab + cards when `showStore` is on), Bug Arena, Defeated Archive, Activity Log, Issues panel. Section visibility follows `uiVisibility` on `stateUpdate` (from VS Code `bugHunter.sidebar.*` settings). Store images use `storeAssetUrl()` (extension-injected webview base in production).
 - Send user intent via typed [`WebviewToHostMessage`](../shared/src/index.ts): `ready`, `userAction`, `cosmeticAction` (purchase / equip).
 - Apply incoming [`HostToWebviewMessage`](../shared/src/index.ts): `stateUpdate` (full `AppState` plus optional `uiVisibility`), `activityLog` (incremental append, optional), `combatLog`, `ping`.
 

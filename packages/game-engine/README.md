@@ -4,14 +4,14 @@
 
 ## Public API (overview)
 
-| Module              | Role                                                                                                           |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `damage` / `combat` | Hit/miss, crits, player vs bug attacks (`resolvePlayerAttack`, `resolveBugAttack`, `calculateDamage`, …).      |
-| `progression`       | Level-ups: `applyXpToGameState`, `xpRequiredToLevelUp`.                                                        |
-| `rewards`           | XP for defeating bugs by rarity.                                                                               |
-| `encounter`         | `runCombat`, `simulateEncounter` — full turn loops producing `CombatLogEntry` sequences.                       |
-| `achievements`      | `BUILT_IN_ACHIEVEMENTS`, `checkAchievements` — side-effect-free checks.                                        |
-| `cosmetics`         | Boogles store catalog (`items/*`), purchase/equip helpers, level title milestones (`progression/levelTitles`). |
+| Module              | Role                                                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `damage` / `combat` | Hit/miss, crits, player vs bug attacks (`resolvePlayerAttack`, `resolveBugAttack`, `calculateDamage`, …).                                               |
+| `progression`       | Level-ups: `applyXpToGameState`, `xpRequiredToLevelUp`.                                                                                                 |
+| `rewards`           | XP for defeating bugs by rarity.                                                                                                                        |
+| `encounter`         | `runCombat`, `simulateEncounter` — full turn loops producing `CombatLogEntry` sequences.                                                                |
+| `achievements`      | `BUILT_IN_ACHIEVEMENTS`, `checkAchievements` — side-effect-free checks.                                                                                 |
+| `cosmetics`         | Boogles store catalog (`items/*` with optional `description` for UI cards), purchase/equip helpers, level title milestones (`progression/levelTitles`). |
 
 Types like `CombatLogEntry` and `PlayerCombatStats` are aligned with [`@bughunter/shared`](../shared/README.md); the engine may re-export compatible shapes for consumers.
 

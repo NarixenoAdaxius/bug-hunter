@@ -12,6 +12,7 @@ export const THEME_STORE_ITEMS: readonly StoreItem[] = [
     category: 'theme',
     glyph: '🌸',
     assetPath: 'store/themes/theme-spring.svg',
+    description: 'Fresh, light accents across the sidebar — new growth, new fixes.',
   },
   {
     id: 'theme-summer',
@@ -20,6 +21,7 @@ export const THEME_STORE_ITEMS: readonly StoreItem[] = [
     category: 'theme',
     glyph: '☀️',
     assetPath: 'store/themes/theme-summer.svg',
+    description: 'Bright, high-contrast palette for sunny debugging sessions.',
   },
   {
     id: 'theme-autumn',
@@ -28,6 +30,7 @@ export const THEME_STORE_ITEMS: readonly StoreItem[] = [
     category: 'theme',
     glyph: '🍂',
     assetPath: 'store/themes/theme-autumn.svg',
+    description: 'Warm tones when you are refactoring the harvest.',
   },
   {
     id: 'theme-winter',
@@ -36,6 +39,7 @@ export const THEME_STORE_ITEMS: readonly StoreItem[] = [
     category: 'theme',
     glyph: '❄️',
     assetPath: 'store/themes/theme-winter.svg',
+    description: 'Cool, crisp colors — focus mode for deep bug traces.',
   },
   {
     id: 'theme-dawn',
@@ -44,6 +48,7 @@ export const THEME_STORE_ITEMS: readonly StoreItem[] = [
     category: 'theme',
     glyph: '🌅',
     assetPath: 'store/themes/theme-dawn.svg',
+    description: 'Soft sunrise gradient — start the day with a calmer panel.',
   },
   {
     id: 'theme-dusk',
@@ -52,5 +57,6 @@ export const THEME_STORE_ITEMS: readonly StoreItem[] = [
     category: 'theme',
     glyph: '🌆',
     assetPath: 'store/themes/theme-dusk.svg',
+    description: 'Evening city hues — easy on the eyes for late-night hunts.',
   },
 ];

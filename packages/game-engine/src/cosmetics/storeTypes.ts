@@ -13,4 +13,6 @@ export type StoreItem = {
    * Replace with PNG/WebP from MCP (`mcp-game-asset-gen`) by overwriting the same path after build.
    */
   assetPath?: string;
+  /** Short line for store cards */
+  description?: string;
 };

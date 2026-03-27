@@ -12,6 +12,7 @@ export const PET_STORE_ITEMS: readonly StoreItem[] = [
     category: 'pet',
     glyph: '🪲',
     assetPath: 'store/pets/pet-beetle.svg',
+    description: 'A tiny debugger’s friend — scuttles through your sidebar while you hunt bugs.',
   },
   {
     id: 'pet-duck',
@@ -20,6 +21,7 @@ export const PET_STORE_ITEMS: readonly StoreItem[] = [
     category: 'pet',
     glyph: '🦆',
     assetPath: 'store/pets/pet-duck.svg',
+    description: 'Classic explain-the-problem energy, now living next to your code.',
   },
   {
     id: 'pet-bot',
@@ -28,5 +30,6 @@ export const PET_STORE_ITEMS: readonly StoreItem[] = [
     category: 'pet',
     glyph: '🤖',
     assetPath: 'store/pets/pet-bot.svg',
+    description: 'Friendly automaton vibes for long sessions at the keyboard.',
   },
 ];

@@ -1,4 +1,5 @@
 import type { AppState } from '@bughunter/shared';
+import { DEFAULT_COSMETICS } from '@bughunter/shared';
 
 export const DEFAULT_APP_STATE: AppState = {
   game: { level: 1, xp: 0, xpToNextLevel: 100 },
@@ -8,6 +9,7 @@ export const DEFAULT_APP_STATE: AppState = {
   issues: [],
   settings: { humorLevel: 1, aiEnabled: false },
   session: { bugsDefeated: 0 },
+  cosmetics: { ...DEFAULT_COSMETICS },
   activityLog: [],
   combatLog: [],
 };

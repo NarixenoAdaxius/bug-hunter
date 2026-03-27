@@ -1,16 +1,18 @@
-import type { GameState, SessionStats } from '@bughunter/shared';
+import type { CosmeticsState, GameState, SessionStats } from '@bughunter/shared';
 
 type Props = {
   game?: GameState;
   session?: SessionStats;
+  cosmetics?: CosmeticsState;
 };
 
-export function Dashboard({ game, session }: Props) {
+export function Dashboard({ game, session, cosmetics }: Props) {
   const level = game?.level ?? 0;
   const xp = game?.xp ?? 0;
   const xpToNextLevel = game?.xpToNextLevel ?? 100;
   const pct = xpToNextLevel > 0 ? Math.min(100, (xp / xpToNextLevel) * 100) : 0;
   const defeated = session?.bugsDefeated ?? 0;
+  const boogles = cosmetics?.boogles ?? 0;
 
   return (
     <section className="rounded-lg border border-bh-border bg-bh-surface p-panel">
@@ -40,6 +42,10 @@ export function Dashboard({ game, session }: Props) {
           <dd className="font-medium text-bh-text-secondary tabular-nums">{defeated}</dd>
         </div>
         <div className="rounded border border-bh-border-subtle bg-bh-card px-2 py-1.5">
+          <dt className="text-bh-muted">Boogles</dt>
+          <dd className="font-medium text-amber-200/90 tabular-nums">{boogles}</dd>
+        </div>
+        <div className="rounded border border-bh-border-subtle bg-bh-card px-2 py-1.5 col-span-2">
           <dt className="text-bh-muted">This level</dt>
           <dd className="font-medium text-bh-text-secondary tabular-nums">
             {xp}/{xpToNextLevel} XP

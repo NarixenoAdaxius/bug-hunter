@@ -32,7 +32,7 @@ Shared contracts (types, event names, extension ↔ webview messages): **[packag
 ## Integration rules
 
 1. **Extension ↔ webview** — Communicate only via typed messages in `@bughunter/shared` (`WebviewToHostMessage`, `HostToWebviewMessage`). Do not invent ad-hoc string payloads without updating `shared` and this document.
-2. **UI** — No VS Code API in `packages/webview`; use `vscode.ts` bridge and `postMessage` only.
+2. **UI** — No VS Code API in `packages/webview`; use `vscode.ts` bridge and `postMessage` only. The webview may import `@bughunter/game-engine` for **read-only** catalog or display helpers (e.g. store item metadata, `findStoreItem`); purchases, equips, and progression still run in the extension using engine APIs and shared messages.
 3. **Game logic** — Keep deterministic, testable code in `packages/game-engine` without VS Code imports.
 4. **Analyzers** — No UI; return `Issue[]` and related types from `shared`.
 5. **C++** — Keep build output under `packages/cpp-engine/build/` or `native/build/` (gitignored).
@@ -46,8 +46,10 @@ When you add or change exported types, event names, or message shapes:
 
 ### Changelog (shared)
 
+- 2026-03-27: Added `CompanionPanelMode`, `SidebarUiVisibility`, `DEFAULT_SIDEBAR_UI_VISIBILITY`, and optional `uiVisibility` on `stateUpdate` payloads for sidebar feature toggles.
 - 2025-03-24: Documented `GameState.xp` as progress toward next level (not lifetime total).
 - 2026-03-26: Added `BugStatus`, `Bug.status`, `Bug.defeatedAt`, `defeatedBugs` to `AppState`, `ActivityLogEntry` type, `activityLog` variant to `HostToWebviewMessage`. Attack now opens file instead of running simulated combat.
+- 2026-03-27: Added `CosmeticsState`, `DEFAULT_COSMETICS`, `cosmetics` on `AppState`, `booglesAwarded` and `levelUp` on `ActivityLogEntry`, and `cosmeticAction` on `WebviewToHostMessage` for the Boogles store (pets, avatars, borders, panel themes).
 - 2026-03-26: Extended `Issue` with optional `sourceUri`, `fileLabel` for workspace-scoped analysis UI.
 - 2026-03-24: Added `PlayerCombatStats`, `CombatLogEntry` (with `bugMiss`), `FileAnalyzedPayload`, `EventPayloadMap` to shared. Added `xpToNextLevel` to `GameState`. Added `player` and `combatLog` fields to `AppState`. Added `combatLog` variant to `HostToWebviewMessage`. Extended `userAction` payload with optional `bugId`.
 - _Scaffold: initial `AppState`, `Issue`, `Bug`, `WebviewToHostMessage`, `HostToWebviewMessage`._

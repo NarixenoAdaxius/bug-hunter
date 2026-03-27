@@ -57,10 +57,71 @@ export type SessionStats = {
   bugsDefeated: number;
 };
 
+/**
+ * Sidebar section toggles from VS Code settings (`bugHunter.sidebar.*`).
+ * Sent with each `stateUpdate` so the webview can show or hide panels.
+ */
+export type CompanionPanelMode = 'none' | 'always' | 'equippedOnly';
+
+export type SidebarUiVisibility = {
+  showDashboard: boolean;
+  showStore: boolean;
+  showBugArena: boolean;
+  showDefeatedArchive: boolean;
+  showActivityLog: boolean;
+  showIssuesPanel: boolean;
+  /** Avatar + border box in the header (title lines stay visible). */
+  showHeaderProfile: boolean;
+  /** Companion block: hidden, always (incl. empty state), or only when a pet is equipped. */
+  companionMode: CompanionPanelMode;
+};
+
+export const DEFAULT_SIDEBAR_UI_VISIBILITY: SidebarUiVisibility = {
+  showDashboard: true,
+  showStore: true,
+  showBugArena: true,
+  showDefeatedArchive: true,
+  showActivityLog: true,
+  showIssuesPanel: true,
+  showHeaderProfile: true,
+  companionMode: 'always',
+};
+
+/** Soft currency and owned/equipped cosmetics (Bug Hunter store). */
+export type CosmeticsState = {
+  boogles: number;
+  ownedPetIds: string[];
+  ownedAvatarIds: string[];
+  ownedBorderIds: string[];
+  ownedThemeIds: string[];
+  equippedPetId: string | null;
+  equippedAvatarId: string;
+  equippedBorderId: string;
+  equippedPanelThemeId: string;
+  /** Display title from level-ups (optional). */
+  profileTitle: string | null;
+};
+
+export const DEFAULT_COSMETICS: CosmeticsState = {
+  boogles: 0,
+  ownedPetIds: [],
+  ownedAvatarIds: ['avatar-default'],
+  ownedBorderIds: ['border-default'],
+  ownedThemeIds: ['theme-default'],
+  equippedPetId: null,
+  equippedAvatarId: 'avatar-default',
+  equippedBorderId: 'border-default',
+  equippedPanelThemeId: 'theme-default',
+  profileTitle: null,
+};
+
+export type CosmeticCategory = 'pet' | 'avatar' | 'border' | 'theme';
+
 /** Activity log entries replace old RPG combat log. */
 export type ActivityLogEntry =
   | { kind: 'engaging'; bugName: string; fileLabel: string }
-  | { kind: 'defeated'; bugName: string; xpAwarded: number }
+  | { kind: 'defeated'; bugName: string; xpAwarded: number; booglesAwarded: number }
+  | { kind: 'levelUp'; newLevel: number; booglesBonus: number; title?: string }
   | { kind: 'scanning'; message: string };
 
 /**
@@ -95,6 +156,7 @@ export type AppState = {
   issues: Issue[];
   settings: Settings;
   session: SessionStats;
+  cosmetics: CosmeticsState;
   activityLog: ActivityLogEntry[];
   combatLog: CombatLogEntry[];
 };
@@ -127,11 +189,15 @@ export type BugHunterEvent = (typeof BUG_HUNTER_EVENTS)[number];
 /** Messages from the webview to the extension host. */
 export type WebviewToHostMessage =
   | { type: 'ready' }
-  | { type: 'userAction'; payload: { action: string; bugId?: string } };
+  | { type: 'userAction'; payload: { action: string; bugId?: string } }
+  | {
+      type: 'cosmeticAction';
+      payload: { action: 'purchase' | 'equip'; category: CosmeticCategory; id: string };
+    };
 
 /** Messages from the extension host to the webview. */
 export type HostToWebviewMessage =
-  | { type: 'stateUpdate'; payload: Partial<AppState> }
+  | { type: 'stateUpdate'; payload: Partial<AppState> & { uiVisibility?: SidebarUiVisibility } }
   | { type: 'activityLog'; payload: ActivityLogEntry[] }
   | { type: 'combatLog'; payload: CombatLogEntry[] }
   | { type: 'ping' };

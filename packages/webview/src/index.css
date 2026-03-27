@@ -1,3 +1,131 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Bug Hunter panel themes (webview only) */
+:root,
+[data-bh-theme='theme-default'] {
+  --bh-bg: rgb(2 6 23);
+  --bh-surface: rgb(15 23 42 / 0.5);
+  --bh-card: rgb(2 6 23 / 0.5);
+  --bh-border: rgb(30 41 59);
+  --bh-border-subtle: rgb(30 41 59 / 0.8);
+  --bh-muted: rgb(100 116 139);
+  --bh-subtle: rgb(148 163 184);
+  --bh-text: rgb(241 245 249);
+  --bh-text-secondary: rgb(226 232 240);
+  --bh-xp: rgb(16 185 129 / 0.9);
+  --bh-hp: rgb(244 63 94 / 0.85);
+  --bh-attack: rgb(225 29 72 / 0.8);
+  --bh-attack-hover: rgb(244 63 94 / 0.9);
+  --bh-attack-active: rgb(190 18 60);
+  --bh-victory: rgb(16 185 129 / 0.7);
+}
+
+[data-bh-theme='theme-spring'] {
+  --bh-bg: rgb(12 35 28);
+  --bh-surface: rgb(20 60 45 / 0.55);
+  --bh-card: rgb(10 40 30 / 0.45);
+  --bh-border: rgb(45 120 90);
+  --bh-border-subtle: rgb(45 120 90 / 0.75);
+  --bh-muted: rgb(134 180 160);
+  --bh-subtle: rgb(167 210 190);
+  --bh-text: rgb(240 253 250);
+  --bh-text-secondary: rgb(204 251 241);
+  --bh-xp: rgb(52 211 153 / 0.95);
+  --bh-hp: rgb(251 113 133 / 0.9);
+  --bh-attack: rgb(244 114 182 / 0.85);
+  --bh-attack-hover: rgb(249 168 212 / 0.95);
+  --bh-attack-active: rgb(190 24 93);
+  --bh-victory: rgb(45 212 191 / 0.75);
+}
+
+[data-bh-theme='theme-summer'] {
+  --bh-bg: rgb(15 30 55);
+  --bh-surface: rgb(25 55 95 / 0.5);
+  --bh-card: rgb(12 40 70 / 0.45);
+  --bh-border: rgb(56 120 180);
+  --bh-border-subtle: rgb(56 120 180 / 0.8);
+  --bh-muted: rgb(125 165 210);
+  --bh-subtle: rgb(165 200 240);
+  --bh-text: rgb(240 249 255);
+  --bh-text-secondary: rgb(224 242 254);
+  --bh-xp: rgb(250 204 21 / 0.95);
+  --bh-hp: rgb(248 113 113 / 0.9);
+  --bh-attack: rgb(251 146 60 / 0.9);
+  --bh-attack-hover: rgb(253 186 116 / 0.95);
+  --bh-attack-active: rgb(234 88 12);
+  --bh-victory: rgb(56 189 248 / 0.8);
+}
+
+[data-bh-theme='theme-autumn'] {
+  --bh-bg: rgb(40 20 12);
+  --bh-surface: rgb(80 40 22 / 0.5);
+  --bh-card: rgb(55 28 16 / 0.45);
+  --bh-border: rgb(140 80 40);
+  --bh-border-subtle: rgb(140 80 40 / 0.75);
+  --bh-muted: rgb(200 150 110);
+  --bh-subtle: rgb(230 190 150);
+  --bh-text: rgb(255 247 237);
+  --bh-text-secondary: rgb(255 237 213);
+  --bh-xp: rgb(251 191 36 / 0.95);
+  --bh-hp: rgb(239 68 68 / 0.88);
+  --bh-attack: rgb(220 90 50 / 0.9);
+  --bh-attack-hover: rgb(249 115 22 / 0.95);
+  --bh-attack-active: rgb(180 50 30);
+  --bh-victory: rgb(250 204 21 / 0.75);
+}
+
+[data-bh-theme='theme-winter'] {
+  --bh-bg: rgb(15 23 42);
+  --bh-surface: rgb(30 41 70 / 0.55);
+  --bh-card: rgb(20 30 55 / 0.5);
+  --bh-border: rgb(100 130 180);
+  --bh-border-subtle: rgb(100 130 180 / 0.7);
+  --bh-muted: rgb(148 163 200);
+  --bh-subtle: rgb(186 200 230);
+  --bh-text: rgb(248 250 252);
+  --bh-text-secondary: rgb(226 232 240);
+  --bh-xp: rgb(125 211 252 / 0.95);
+  --bh-hp: rgb(244 114 182 / 0.88);
+  --bh-attack: rgb(147 197 253 / 0.9);
+  --bh-attack-hover: rgb(191 219 254 / 0.95);
+  --bh-attack-active: rgb(59 130 246);
+  --bh-victory: rgb(186 230 253 / 0.8);
+}
+
+[data-bh-theme='theme-dawn'] {
+  --bh-bg: rgb(35 25 45);
+  --bh-surface: rgb(60 40 75 / 0.5);
+  --bh-card: rgb(45 32 58 / 0.45);
+  --bh-border: rgb(120 90 150);
+  --bh-border-subtle: rgb(120 90 150 / 0.75);
+  --bh-muted: rgb(180 160 200);
+  --bh-subtle: rgb(210 195 225);
+  --bh-text: rgb(253 250 255);
+  --bh-text-secondary: rgb(243 232 255);
+  --bh-xp: rgb(196 181 253 / 0.95);
+  --bh-hp: rgb(251 113 133 / 0.88);
+  --bh-attack: rgb(244 114 182 / 0.9);
+  --bh-attack-hover: rgb(249 168 212 / 0.95);
+  --bh-attack-active: rgb(219 39 119);
+  --bh-victory: rgb(216 180 254 / 0.8);
+}
+
+[data-bh-theme='theme-dusk'] {
+  --bh-bg: rgb(20 20 40);
+  --bh-surface: rgb(40 35 70 / 0.55);
+  --bh-card: rgb(28 28 55 / 0.5);
+  --bh-border: rgb(90 80 140);
+  --bh-border-subtle: rgb(90 80 140 / 0.75);
+  --bh-muted: rgb(150 140 190);
+  --bh-subtle: rgb(185 175 215);
+  --bh-text: rgb(245 243 255);
+  --bh-text-secondary: rgb(230 225 250);
+  --bh-xp: rgb(167 139 250 / 0.95);
+  --bh-hp: rgb(251 113 133 / 0.88);
+  --bh-attack: rgb(192 132 252 / 0.9);
+  --bh-attack-hover: rgb(216 180 254 / 0.95);
+  --bh-attack-active: rgb(147 51 234);
+  --bh-victory: rgb(196 181 253 / 0.75);
+}

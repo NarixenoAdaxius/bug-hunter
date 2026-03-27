@@ -10,7 +10,11 @@ function formatEntry(entry: ActivityLogEntry): string {
     case 'engaging':
       return `Engaging ${entry.bugName} in ${entry.fileLabel}…`;
     case 'defeated':
-      return `Defeated ${entry.bugName}! +${entry.xpAwarded} XP`;
+      return `Defeated ${entry.bugName}! +${entry.xpAwarded} XP · +${entry.booglesAwarded ?? 0} Boogles`;
+    case 'levelUp':
+      return entry.title
+        ? `Level ${entry.newLevel}! ${entry.title} · +${entry.booglesBonus} Boogles`
+        : `Level ${entry.newLevel}! +${entry.booglesBonus} Boogles`;
     case 'scanning':
       return entry.message;
   }
@@ -22,6 +26,8 @@ function entryColor(kind: ActivityLogEntry['kind']): string {
       return 'text-amber-300';
     case 'defeated':
       return 'text-emerald-300';
+    case 'levelUp':
+      return 'text-sky-300';
     case 'scanning':
       return 'text-slate-400';
   }

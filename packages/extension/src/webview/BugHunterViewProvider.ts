@@ -2,14 +2,18 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import type {
-  ActivityLogEntry,
   AppState,
   CombatLogEntry,
   HostToWebviewMessage,
   WebviewToHostMessage,
 } from '@bughunter/shared';
+import type { BugHunterConfiguration } from '../config/configuration.js';
 import type { EventBus } from '../bus/eventBus.js';
 import type { StateManager } from '../state/stateManager.js';
+
+export type CosmeticActionHandler = (
+  payload: Extract<WebviewToHostMessage, { type: 'cosmeticAction' }>['payload']
+) => void;
 
 export class BugHunterViewProvider implements vscode.WebviewViewProvider {
   static readonly viewType = 'bugHunter.sidebar';
@@ -20,7 +24,9 @@ export class BugHunterViewProvider implements vscode.WebviewViewProvider {
   constructor(
     private readonly extensionUri: vscode.Uri,
     private readonly bus: EventBus,
-    private readonly stateManager: StateManager
+    private readonly stateManager: StateManager,
+    private readonly configuration: BugHunterConfiguration,
+    private readonly onCosmeticAction: CosmeticActionHandler
   ) {}
 
   resolveWebviewView(
@@ -51,6 +57,8 @@ export class BugHunterViewProvider implements vscode.WebviewViewProvider {
           this.postState(this.stateManager.get());
         } else if (msg.type === 'userAction') {
           this.bus.emit('USER_ACTION', msg.payload);
+        } else if (msg.type === 'cosmeticAction') {
+          this.onCosmeticAction(msg.payload);
         }
       } catch (err) {
         const detail = err instanceof Error ? err.message : String(err);
@@ -73,9 +81,11 @@ export class BugHunterViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
-  postActivityLog(entries: ActivityLogEntry[]): void {
-    const message: HostToWebviewMessage = { type: 'activityLog', payload: entries };
-    void this.view?.webview.postMessage(message);
+  /** Re-push state when only VS Code settings (e.g. sidebar toggles) changed. */
+  notifyUiSettingsChanged(): void {
+    if (this.view) {
+      this.postState(this.stateManager.get());
+    }
   }
 
   postCombatLog(log: CombatLogEntry[]): void {
@@ -83,8 +93,11 @@ export class BugHunterViewProvider implements vscode.WebviewViewProvider {
     void this.view?.webview.postMessage(message);
   }
 
-  private postState(payload: Partial<AppState>): void {
-    const message: HostToWebviewMessage = { type: 'stateUpdate', payload };
+  private postState(state: AppState): void {
+    const message: HostToWebviewMessage = {
+      type: 'stateUpdate',
+      payload: { ...state, uiVisibility: this.configuration.sidebarUiVisibility },
+    };
     void this.view?.webview.postMessage(message);
   }
 
@@ -141,6 +154,14 @@ function isValidWebviewMessage(data: unknown): data is WebviewToHostMessage {
     if (payload == null || typeof payload !== 'object') return false;
     const p = payload as Record<string, unknown>;
     return typeof p.action === 'string';
+  }
+  if (obj.type === 'cosmeticAction') {
+    const payload = obj.payload;
+    if (payload == null || typeof payload !== 'object') return false;
+    const p = payload as Record<string, unknown>;
+    const cat = p.category;
+    const okCat = cat === 'pet' || cat === 'avatar' || cat === 'border' || cat === 'theme';
+    return okCat && (p.action === 'purchase' || p.action === 'equip') && typeof p.id === 'string';
   }
   return false;
 }

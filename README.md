@@ -26,6 +26,14 @@ A gamified developer intelligence platform for VS Code that turns code analysis 
 
 Bug Hunter scans your workspace for code issues, spawns **bugs** from them, and lets you hunt them down by navigating to the source and fixing the code — all tracked inside a VS Code sidebar webview with XP, levels, and a defeated archive.
 
+## Screenshots
+
+Optional screenshots live under [`docs/assets/`](docs/assets/); see [docs/assets/README.md](docs/assets/README.md) for filenames and embed examples. When those PNGs are present, the following shots are a good set:
+
+- **Dashboard & Bug Arena** — level progress, XP, Boogles, active bug roster with rarity and issue details.
+- **Defeated, Activity & Insights** — defeated archive, activity log, and issues panel.
+- **Fighting mode** — attacking a bug opens the source at the issue line; fixing the code defeats the bug.
+
 ## Monorepo layout
 
 npm **workspaces** (`packages/*`). The **build order** is fixed: `shared` → `game-engine` → `analyzers` → `ai` → `webview` → `extension` (extension copies the webview `dist` into `media/webview`).

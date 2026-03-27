@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import type { ActivityLogEntry, AppState, HostToWebviewMessage } from '@bughunter/shared';
+import type {
+  ActivityLogEntry,
+  AppState,
+  HostToWebviewMessage,
+  SidebarUiVisibility,
+} from '@bughunter/shared';
 import { vscode } from '../vscode';
 
 function isHostMessage(data: unknown): data is HostToWebviewMessage {
@@ -10,6 +15,7 @@ function isHostMessage(data: unknown): data is HostToWebviewMessage {
 
 export type HostState = Partial<AppState> & {
   activityLog: ActivityLogEntry[];
+  uiVisibility?: SidebarUiVisibility;
 };
 
 export function useHostState() {

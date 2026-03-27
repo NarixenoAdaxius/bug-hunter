@@ -10,6 +10,14 @@ function isValidWebviewMessage(data: unknown): boolean {
     const p = payload as Record<string, unknown>;
     return typeof p.action === 'string';
   }
+  if (obj.type === 'cosmeticAction') {
+    const payload = obj.payload;
+    if (payload == null || typeof payload !== 'object') return false;
+    const p = payload as Record<string, unknown>;
+    const cat = p.category;
+    const okCat = cat === 'pet' || cat === 'avatar' || cat === 'border' || cat === 'theme';
+    return okCat && (p.action === 'purchase' || p.action === 'equip') && typeof p.id === 'string';
+  }
   return false;
 }
 
@@ -42,6 +50,24 @@ describe('isValidWebviewMessage', () => {
 
   it('rejects unknown type', () => {
     expect(isValidWebviewMessage({ type: 'unknown' })).toBe(false);
+  });
+
+  it('accepts cosmeticAction purchase', () => {
+    expect(
+      isValidWebviewMessage({
+        type: 'cosmeticAction',
+        payload: { action: 'purchase', category: 'pet', id: 'pet-duck' },
+      })
+    ).toBe(true);
+  });
+
+  it('rejects cosmeticAction with bad category', () => {
+    expect(
+      isValidWebviewMessage({
+        type: 'cosmeticAction',
+        payload: { action: 'purchase', category: 'nope', id: 'x' },
+      })
+    ).toBe(false);
   });
 
   it('rejects userAction without payload', () => {

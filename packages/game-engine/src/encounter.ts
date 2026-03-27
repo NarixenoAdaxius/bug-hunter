@@ -19,6 +19,77 @@ export type EncounterResult = {
   log: CombatLogEntry[];
 };
 
+type TurnState = {
+  bug: Bug;
+  player: PlayerCombatStats;
+  gameState: GameState;
+  log: CombatLogEntry[];
+  /** Truthy when the encounter ended during this turn. */
+  result?: EncounterResult;
+};
+
+function applyPlayerTurn(
+  ts: TurnState,
+  turn: number,
+  rng: () => number,
+  missChance: number,
+  originalBug: Bug
+): void {
+  const swing = resolvePlayerAttack(ts.player.attack, ts.bug, rng, missChance);
+  if (swing.miss) {
+    ts.log.push({ kind: 'playerMiss', turn });
+    return;
+  }
+  ts.bug = { ...ts.bug, hp: Math.max(0, ts.bug.hp - swing.damage) };
+  ts.log.push({
+    kind: 'playerHit',
+    turn,
+    damage: swing.damage,
+    critical: swing.critical,
+    bugHpAfter: ts.bug.hp,
+  });
+
+  if (ts.bug.hp <= 0) {
+    const xpAwarded = xpForDefeatingBug(originalBug);
+    ts.gameState = applyXpToGameState(ts.gameState, xpAwarded);
+    ts.log.push({ kind: 'bugDefeated', xpAwarded });
+    ts.result = {
+      gameState: ts.gameState,
+      player: ts.player,
+      bug: ts.bug,
+      victory: true,
+      log: ts.log,
+    };
+  }
+}
+
+function applyBugTurn(ts: TurnState, turn: number, rng: () => number, missChance: number): void {
+  const swing = resolveBugAttack(ts.bug, ts.player, rng, missChance);
+  if (swing.miss) {
+    ts.log.push({ kind: 'bugMiss', turn });
+    return;
+  }
+  ts.player = { ...ts.player, hp: Math.max(0, ts.player.hp - swing.damage) };
+  ts.log.push({
+    kind: 'bugHit',
+    turn,
+    damage: swing.damage,
+    critical: swing.critical,
+    playerHpAfter: ts.player.hp,
+  });
+
+  if (ts.player.hp <= 0) {
+    ts.log.push({ kind: 'playerDefeated' });
+    ts.result = {
+      gameState: ts.gameState,
+      player: ts.player,
+      bug: ts.bug,
+      victory: false,
+      log: ts.log,
+    };
+  }
+}
+
 /**
  * Turn-based fight: player acts first each round, then the bug if still alive.
  * On victory, applies XP via {@link applyXpToGameState} and {@link xpForDefeatingBug}.
@@ -32,81 +103,29 @@ export function simulateEncounter(
 ): EncounterResult {
   const missChance = options?.missChance ?? DEFAULT_MISS_CHANCE;
   const maxTurns = options?.maxTurns ?? 200;
-  let bugSnapshot: Bug = { ...bug };
-  let p: PlayerCombatStats = { ...player };
-  let state: GameState = { ...gameState };
-  const log: CombatLogEntry[] = [];
-  let turn = 0;
+  const ts: TurnState = {
+    bug: { ...bug },
+    player: { ...player },
+    gameState: { ...gameState },
+    log: [],
+  };
 
-  while (bugSnapshot.hp > 0 && p.hp > 0 && turn < maxTurns) {
-    turn += 1;
-    log.push({ kind: 'turnStart', turn });
+  for (let turn = 1; ts.bug.hp > 0 && ts.player.hp > 0 && turn <= maxTurns; turn++) {
+    ts.log.push({ kind: 'turnStart', turn });
 
-    const playerSwing = resolvePlayerAttack(p.attack, bugSnapshot, rng, missChance);
-    if (playerSwing.miss) {
-      log.push({ kind: 'playerMiss', turn });
-    } else {
-      bugSnapshot = {
-        ...bugSnapshot,
-        hp: Math.max(0, bugSnapshot.hp - playerSwing.damage),
-      };
-      log.push({
-        kind: 'playerHit',
-        turn,
-        damage: playerSwing.damage,
-        critical: playerSwing.critical,
-        bugHpAfter: bugSnapshot.hp,
-      });
-    }
+    applyPlayerTurn(ts, turn, rng, missChance, bug);
+    if (ts.result) return ts.result;
 
-    if (bugSnapshot.hp <= 0) {
-      const xpAwarded = xpForDefeatingBug(bug);
-      state = applyXpToGameState(state, xpAwarded);
-      log.push({ kind: 'bugDefeated', xpAwarded });
-      return {
-        gameState: state,
-        player: p,
-        bug: bugSnapshot,
-        victory: true,
-        log,
-      };
-    }
-
-    const bugSwing = resolveBugAttack(bugSnapshot, p, rng, missChance);
-    if (bugSwing.miss) {
-      log.push({ kind: 'bugMiss', turn });
-    } else {
-      p = {
-        ...p,
-        hp: Math.max(0, p.hp - bugSwing.damage),
-      };
-      log.push({
-        kind: 'bugHit',
-        turn,
-        damage: bugSwing.damage,
-        critical: bugSwing.critical,
-        playerHpAfter: p.hp,
-      });
-    }
-
-    if (p.hp <= 0) {
-      log.push({ kind: 'playerDefeated' });
-      return {
-        gameState: state,
-        player: p,
-        bug: bugSnapshot,
-        victory: false,
-        log,
-      };
-    }
+    applyBugTurn(ts, turn, rng, missChance);
+    if (ts.result) return ts.result;
   }
 
   return {
-    gameState: state,
-    player: p,
-    bug: bugSnapshot,
-    victory: bugSnapshot.hp <= 0,
-    log,
+    gameState: ts.gameState,
+    player: ts.player,
+    bug: ts.bug,
+    victory: ts.bug.hp <= 0,
+    log: ts.log,
   };
 }
 

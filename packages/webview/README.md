@@ -4,13 +4,17 @@
 
 ## Responsibilities
 
-- Render game state: Bug Arena (idle/fighting bugs), Defeated Archive, Issues panel, Activity Log, Dashboard.
-- Send user intent to the extension via typed [`WebviewToHostMessage`](../shared/src/index.ts) (`ready`, `userAction`).
-- Apply incoming [`HostToWebviewMessage`](../shared/src/index.ts) (`stateUpdate`, `activityLog`, `combatLog`, `ping`).
+- Render game state: Dashboard (XP, Boogles), themed shell, optional companion pet, Boogles store, Bug Arena, Defeated Archive, Activity Log, Issues panel. Section visibility follows `uiVisibility` on `stateUpdate` (from VS Code `bugHunter.sidebar.*` settings).
+- Send user intent via typed [`WebviewToHostMessage`](../shared/src/index.ts): `ready`, `userAction`, `cosmeticAction` (purchase / equip).
+- Apply incoming [`HostToWebviewMessage`](../shared/src/index.ts): `stateUpdate` (full `AppState` plus optional `uiVisibility`), `activityLog` (incremental append, optional), `combatLog`, `ping`.
 
 ## Bridge
 
 All host communication goes through [src/vscode.ts](src/vscode.ts) (acquire `vscode` API from the webview) and `postMessage` — **no** `import 'vscode'` in this package.
+
+## `@bughunter/game-engine`
+
+This package depends on `game-engine` for **read-only** store catalog data (`ALL_STORE_ITEMS`, `findStoreItem`, `isOwned`) so the UI stays aligned with the authoritative item list. Do not reimplement prices or item ids in the webview.
 
 ## Scripts
 

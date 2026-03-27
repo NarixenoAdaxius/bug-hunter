@@ -1,11 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import type { Bug } from '@bughunter/shared';
+import { DEFAULT_COSMETICS } from '@bughunter/shared';
 import {
   applyXpToGameState,
+  booglesForDefeatingBug,
   calculateDamage,
   computeHitDamage,
+  equipCosmetic,
+  isOwned,
+  purchaseCosmetic,
+  ALL_STORE_ITEMS,
   resolvePlayerAttack,
   resolveBugAttack,
+  rewardsForLevelRange,
   simulateEncounter,
   xpForDefeatingBug,
   xpRequiredToLevelUp,
@@ -177,5 +184,53 @@ describe('checkAchievements', () => {
 
   it('exports built-in achievements list', () => {
     expect(BUILT_IN_ACHIEVEMENTS.length).toBeGreaterThanOrEqual(5);
+  });
+});
+
+describe('booglesForDefeatingBug', () => {
+  it('scales with XP and has a minimum of 1', () => {
+    const bug = makeBug({ rarity: 'common', issue: { id: 'i', message: 'm', severity: 'info' } });
+    expect(booglesForDefeatingBug(bug)).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe('rewardsForLevelRange', () => {
+  it('returns no rewards when level unchanged', () => {
+    expect(rewardsForLevelRange(3, 3)).toEqual({ totalBoogles: 0 });
+  });
+
+  it('accumulates Boogles per level and milestone title', () => {
+    const r = rewardsForLevelRange(2, 3);
+    expect(r.totalBoogles).toBe(12 + 3 * 3);
+    expect(r.title).toBe('Apprentice Debugger');
+  });
+});
+
+describe('cosmetic store', () => {
+  it('purchase deducts Boogles and adds ownership', () => {
+    const start = { ...DEFAULT_COSMETICS, boogles: 100 };
+    const next = purchaseCosmetic(start, 'pet', 'pet-duck');
+    expect(next).not.toBeNull();
+    expect(next!.boogles).toBe(65);
+    expect(isOwned(next!, 'pet', 'pet-duck')).toBe(true);
+  });
+
+  it('equip requires ownership', () => {
+    expect(equipCosmetic(DEFAULT_COSMETICS, 'pet', 'pet-duck')).toBeNull();
+  });
+
+  it('equip rejects ids not in the store catalog even if present in owned list', () => {
+    const corrupted = {
+      ...DEFAULT_COSMETICS,
+      ownedAvatarIds: ['avatar-default', 'not-a-real-item'],
+    };
+    expect(equipCosmetic(corrupted, 'avatar', 'not-a-real-item')).toBeNull();
+  });
+});
+
+describe('store catalog', () => {
+  it('has unique item ids', () => {
+    const ids = ALL_STORE_ITEMS.map((i) => i.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });

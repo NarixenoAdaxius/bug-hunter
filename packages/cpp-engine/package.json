@@ -1,6 +1,6 @@
 {
   "name": "@bughunter/cpp-engine",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "Native C++ analyzer (N-API); optional build — not part of root npm run build",
   "type": "module",

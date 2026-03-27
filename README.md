@@ -28,11 +28,41 @@ Bug Hunter scans your workspace for code issues, spawns **bugs** from them, and 
 
 ## Screenshots
 
-Optional screenshots live under [`docs/assets/`](docs/assets/); see [docs/assets/README.md](docs/assets/README.md) for filenames and embed examples. When those PNGs are present, the following shots are a good set:
+PNG assets live under [`docs/assets/`](docs/assets/). See [docs/assets/README.md](docs/assets/README.md) for the full file list.
 
-- **Dashboard & Bug Arena** — level progress, XP, Boogles, active bug roster with rarity and issue details.
-- **Defeated, Activity & Insights** — defeated archive, activity log, and issues panel.
-- **Fighting mode** — attacking a bug opens the source at the issue line; fixing the code defeats the bug.
+### Core sidebar
+
+**Dashboard & Bug Arena** — level progress, XP, Boogles, active bug roster with rarity and issue details.
+
+![Dashboard and Bug Arena — level, XP, Boogles, active bugs](docs/assets/screenshot-dashboard.png)
+
+**Defeated, activity & insights** — defeated archive, activity log, and issues panel.
+
+![Defeated archive, activity log, issues panel](docs/assets/screenshot-defeated-insights.png)
+
+**Fighting mode** — Attack opens the source at the issue line; fixing the code defeats the bug.
+
+![Fighting a bug — navigate to source](docs/assets/screenshot-fighting.png)
+
+### Boogles store
+
+Spend **Boogles** on cosmetics from the **Boogles store** tab (pets, avatars, header borders, panel themes).
+
+#### Pets
+
+![Boogles store — pets (Byte Beetle, Rubber Duck, Debug Bot)](docs/assets/screenshot-store-pets.png)
+
+#### Avatars
+
+![Boogles store — avatars (Neon Node, Hex Core)](docs/assets/screenshot-store-avatars.png)
+
+#### Borders
+
+![Boogles store — header borders (Gold Frame, Holo Rim)](docs/assets/screenshot-store-borders.png)
+
+#### Panel themes
+
+![Boogles store — panel themes (Spring, Summer, Autumn, …)](docs/assets/screenshot-store-themes.png)
 
 ## Monorepo layout
 
